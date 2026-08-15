@@ -28,12 +28,12 @@ export function Hero() {
   return (
     <section className="relative overflow-hidden hero-glow">
       <div className="mx-auto max-w-7xl px-5 pb-20 pt-20 md:pt-28">
-        <Reveal className="mx-auto max-w-4xl text-center">
+        <Reveal className="mx-auto max-w-5xl text-center">
           <span className="inline-flex items-center gap-2 rounded-full border border-border bg-glass px-3 py-1 text-xs text-muted-foreground">
             <span className="size-1.5 rounded-full bg-signal" />
             99.98% sync uptime across every tenant
           </span>
-          <h1 className="mt-6 text-balance text-5xl font-semibold leading-[1.02] md:text-7xl lg:text-[84px]">
+          <h1 className="mt-6 text-4xl font-semibold leading-[1.05] sm:text-5xl md:text-6xl lg:text-[68px]">
             Run every order, every counter,
             <br className="hidden md:block" /> every ledger — from one platform.
           </h1>
