@@ -8,13 +8,15 @@ import { revenueSeries } from "@/data/mock";
 function MiniChart() {
   const max = Math.max(...revenueSeries.map((d) => d.value));
   return (
-    <div className="flex h-28 items-end gap-2">
+    <div className="flex h-32 items-stretch gap-2">
       {revenueSeries.map((d, i) => (
         <div key={d.label} className="flex flex-1 flex-col items-center gap-2">
-          <div
-            className="w-full rounded-t-sm bg-signal/70 transition-all duration-700"
-            style={{ height: `${(d.value / max) * 100}%`, transitionDelay: `${i * 60}ms` }}
-          />
+          <div className="flex w-full flex-1 items-end">
+            <div
+              className="w-full rounded-t-md bg-signal/70 transition-all duration-700"
+              style={{ height: `${(d.value / max) * 100}%`, transitionDelay: `${i * 60}ms` }}
+            />
+          </div>
           <span className="text-[10px] text-muted-foreground">{d.label}</span>
         </div>
       ))}
