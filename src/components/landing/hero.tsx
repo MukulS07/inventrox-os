@@ -87,7 +87,7 @@ export function Hero() {
             </div>
           </div>
 
-          <div className="glass absolute -bottom-6 -left-2 hidden w-72 p-4 shadow-[var(--shadow-glass)] sm:block md:-left-10">
+          <div className="glass absolute -bottom-12 -left-2 hidden w-72 p-4 shadow-[var(--shadow-glass)] sm:block md:-left-16">
             <div className="flex items-start gap-3">
               <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-roast/15 text-roast">
                 <Sparkles className="size-4" />
