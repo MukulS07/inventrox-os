@@ -216,8 +216,9 @@ const workflows = [
 ];
 
 export function WorkflowExplorer() {
-  const [active, setActive] = useState(workflows[0].id);
-  const current = workflows.find((w) => w.id === active) ?? workflows[0];
+  const [active, setActive] = useState(workflows[0]!.id);
+  const current = workflows.find((w) => w.id === active) ?? workflows[0]!;
+
 
   return (
     <section className="mx-auto max-w-7xl px-5 py-24">
