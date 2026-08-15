@@ -318,72 +318,15 @@ function Overview() {
               Live
             </Badge>
           </div>
-          <div className="mt-4 h-56">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={revenueSeries}>
-                <defs>
-                  <linearGradient id="rev" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="var(--chart-1)" stopOpacity={0.5} />
-                    <stop offset="100%" stopColor="var(--chart-1)" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <XAxis
-                  dataKey="label"
-                  tickLine={false}
-                  axisLine={false}
-                  tick={{ fill: "var(--muted-foreground)", fontSize: 11 }}
-                />
-                <Tooltip
-                  contentStyle={{
-                    background: "var(--popover)",
-                    border: "1px solid var(--border)",
-                    borderRadius: 12,
-                    color: "var(--popover-foreground)",
-                  }}
-                  formatter={(v: number) => inr(v)}
-                />
-                <Area
-                  type="monotone"
-                  isAnimationActive={false}
-                  dataKey="value"
-                  stroke="var(--chart-1)"
-                  strokeWidth={2}
-                  fill="url(#rev)"
-                />
-              </AreaChart>
-            </ResponsiveContainer>
+          <div className="mt-4">
+            <AreaTrend data={revenueSeries} />
           </div>
         </div>
 
         <div className="glass p-5">
           <h2 className="text-sm font-semibold">Valuation by category</h2>
-          <div className="mt-2 h-40">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={valuationByCategory}
-                  dataKey="value"
-                  nameKey="category"
-                  innerRadius={44}
-                  outerRadius={64}
-                  paddingAngle={3}
-                  isAnimationActive={false}
-                  stroke="none"
-                >
-                  {valuationByCategory.map((_, i) => (
-                    <Cell key={i} fill={chartColors[i % chartColors.length]} />
-                  ))}
-                </Pie>
-                <Tooltip
-                  contentStyle={{
-                    background: "var(--popover)",
-                    border: "1px solid var(--border)",
-                    borderRadius: 12,
-                  }}
-                  formatter={(v: number) => `${v}%`}
-                />
-              </PieChart>
-            </ResponsiveContainer>
+          <div className="mt-2">
+            <Donut data={valuationByCategory} colors={chartColors} />
           </div>
           <ul className="mt-3 space-y-1.5">
             {valuationByCategory.map((v, i) => (
