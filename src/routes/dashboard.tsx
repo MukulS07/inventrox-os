@@ -344,6 +344,7 @@ function Overview() {
                 />
                 <Area
                   type="monotone"
+                  isAnimationActive={false}
                   dataKey="value"
                   stroke="var(--chart-1)"
                   strokeWidth={2}
@@ -366,6 +367,7 @@ function Overview() {
                   innerRadius={44}
                   outerRadius={64}
                   paddingAngle={3}
+                  isAnimationActive={false}
                   stroke="none"
                 >
                   {valuationByCategory.map((_, i) => (
