@@ -111,7 +111,24 @@ export function Hero() {
               </div>
             </div>
 
-            <div className="relative mt-auto flex flex-wrap items-center justify-between gap-3 pt-8 font-mono text-[10px] tracking-[0.18em] text-muted-foreground/70">
+            {/* main trend */}
+            <div className="relative mt-8 flex flex-1 items-end gap-2 md:gap-3">
+              {revenueSeries.map((d, i) => {
+                const max = Math.max(...revenueSeries.map((x) => x.value));
+                const last = i === revenueSeries.length - 1;
+                return (
+                  <div key={d.label} className="flex h-full flex-1 flex-col justify-end gap-2">
+                    <div
+                      className={`w-full rounded-t-md ${last ? "bg-roast" : "bg-signal/60"}`}
+                      style={{ height: `${Math.max(12, (d.value / max) * 92)}%` }}
+                    />
+                    <span className="text-center text-[10px] text-muted-foreground">{d.label}</span>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="relative mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-border/60 pt-4 font-mono text-[10px] tracking-[0.18em] text-muted-foreground/70">
               <div className="flex gap-6">
                 <span>STREAM_ID // INVX-882</span>
                 <span className="hidden sm:inline">TENANT // ISOLATED_RLS</span>
@@ -121,7 +138,7 @@ export function Hero() {
           </div>
 
           {/* Layer 3 — throughput panel */}
-          <div className="glass-strong absolute -left-4 -top-8 z-20 hidden w-64 rounded-2xl p-5 shadow-[var(--shadow-glass)] float-a md:block md:-left-10">
+          <div className="glass-strong absolute -left-6 bottom-16 z-20 hidden w-60 rounded-2xl p-5 shadow-[var(--shadow-glass)] float-a lg:block lg:-left-16">
             <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
               Throughput rate
             </p>
@@ -135,7 +152,7 @@ export function Hero() {
           </div>
 
           {/* Layer 4 — network health */}
-          <div className="glass-strong absolute -right-4 top-12 z-30 hidden w-48 rounded-xl p-4 shadow-[var(--shadow-glass)] float-b lg:block lg:-right-10">
+          <div className="glass-strong absolute -right-6 -top-10 z-30 hidden w-52 rounded-xl p-4 shadow-[var(--shadow-glass)] float-b lg:block lg:-right-14">
             <div className="flex items-center justify-between">
               <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
                 Network
@@ -149,6 +166,7 @@ export function Hero() {
               Forecast accuracy <span className="tabular text-foreground">94.2%</span>
             </p>
           </div>
+
 
           {/* Layer 5 — AI insight */}
           <div className="absolute -right-4 top-1/2 z-40 hidden w-64 -translate-y-1/2 rounded-2xl border border-roast/30 bg-roast/10 p-5 shadow-[var(--shadow-glow)] backdrop-blur-xl float-c md:block lg:-right-14">
