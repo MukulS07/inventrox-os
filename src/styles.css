@@ -176,6 +176,67 @@
   background-image: var(--gradient-hero);
 }
 
+@utility grid-dots {
+  background-image: radial-gradient(circle at 2px 2px, oklch(1 0 0 / 12%) 1px, transparent 0);
+  background-size: 40px 40px;
+}
+
+@keyframes float-panel {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -10px, 0);
+  }
+}
+
+@keyframes sweep {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  40% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(400%);
+    opacity: 0;
+  }
+}
+
+@keyframes ring-out {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+@utility float-a {
+  animation: float-panel 7s ease-in-out infinite;
+}
+
+@utility float-b {
+  animation: float-panel 9s ease-in-out infinite 1.2s;
+}
+
+@utility float-c {
+  animation: float-panel 8s ease-in-out infinite 2.4s;
+}
+
+@utility scan-sweep {
+  animation: sweep 6s linear infinite;
+}
+
+@utility ring-pulse {
+  animation: ring-out 4s ease-out infinite;
+}
+
+
 @utility reveal {
   opacity: 0;
   transform: translateY(18px);
