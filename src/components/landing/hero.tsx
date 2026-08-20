@@ -187,7 +187,7 @@ export function Hero() {
           </div>
 
           {/* Layer 6 — HUD pill */}
-          <div className="absolute -bottom-5 left-8 z-50 hidden items-center gap-4 rounded-full border border-border bg-glass px-6 py-3 font-mono text-[10px] backdrop-blur-xl sm:flex md:left-20">
+          <div className="absolute -bottom-6 left-1/2 z-50 hidden -translate-x-1/2 items-center gap-4 rounded-full border border-border bg-card px-6 py-3 font-mono text-[10px] sm:flex">
             <span className="flex items-center gap-2 text-muted-foreground">
               <ShieldCheck className="size-3 text-signal" /> AUDIT TRAIL: ON
             </span>
