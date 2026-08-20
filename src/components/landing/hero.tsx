@@ -138,7 +138,7 @@ export function Hero() {
           </div>
 
           {/* Layer 3 — throughput panel */}
-          <div className="glass-strong absolute -left-6 bottom-16 z-20 hidden w-60 rounded-2xl p-5 shadow-[var(--shadow-glass)] float-a lg:block lg:-left-16">
+          <div className="glass-strong absolute -bottom-14 left-2 z-20 hidden w-60 rounded-2xl bg-card/90 p-5 shadow-[var(--shadow-glass)] float-a lg:block lg:-left-16">
             <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
               Throughput rate
             </p>
@@ -169,7 +169,7 @@ export function Hero() {
 
 
           {/* Layer 5 — AI insight */}
-          <div className="absolute -right-4 top-1/2 z-40 hidden w-64 -translate-y-1/2 rounded-2xl border border-roast/30 bg-roast/10 p-5 shadow-[var(--shadow-glow)] backdrop-blur-xl float-c lg:block lg:-right-14">
+          <div className="absolute -bottom-16 right-2 z-40 hidden w-72 rounded-2xl border border-roast/40 bg-card p-5 shadow-[var(--shadow-glow)] float-c lg:block lg:-right-12">
             <div className="flex items-start gap-3">
               <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-roast text-roast-foreground">
                 <Zap className="size-4" />
