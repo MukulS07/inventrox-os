@@ -130,7 +130,7 @@ export function Hero() {
           </div>
 
           {/* Assistant card — the one overlay allowed a shadow */}
-          <div className="glass-strong absolute -bottom-8 -left-4 hidden w-64 p-4 shadow-[var(--shadow-pop)] sm:block lg:-left-12">
+          <div className="glass-strong absolute -bottom-14 left-2 hidden w-64 p-4 shadow-[var(--shadow-pop)] lg:block lg:-left-14">
             <div className="flex items-center gap-2">
               <span className="grid size-7 place-items-center rounded-full border border-foreground/70">
                 <Sparkles className="size-3.5" />
@@ -144,7 +144,7 @@ export function Hero() {
           </div>
 
           {/* Top account chip */}
-          <div className="glass absolute -right-3 -top-6 hidden items-center gap-2.5 px-3.5 py-2.5 lg:flex">
+          <div className="glass absolute -right-4 -top-11 hidden items-center gap-2.5 px-3.5 py-2.5 lg:flex">
             <span className="grid size-7 place-items-center rounded-full bg-accent font-mono text-[10px] font-semibold text-accent-foreground">
               {customers[0]!.name.slice(0, 2).toUpperCase()}
             </span>
