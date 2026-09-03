@@ -37,8 +37,8 @@ function SectionHead({
 }) {
   return (
     <Reveal className="mx-auto max-w-2xl text-center">
-      <p className="text-xs font-medium uppercase tracking-[0.18em] text-roast">{eyebrow}</p>
-      <h2 className="mt-3 text-balance text-3xl font-semibold md:text-5xl">{title}</h2>
+      <p className="label-mono">{eyebrow}</p>
+      <h2 className="mt-4 text-balance text-3xl leading-[1.1] md:text-[2.5rem]">{title}</h2>
       {sub && <p className="mt-4 text-muted-foreground">{sub}</p>}
     </Reveal>
   );
