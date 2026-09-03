@@ -56,7 +56,7 @@ export function SiteNav() {
       </div>
 
       {open && (
-        <div className="border-t border-border/60 px-5 py-3 md:hidden">
+        <div className="border-t border-rule px-5 py-3 md:hidden">
           {links.map((l) => (
             <Link
               key={l.to}

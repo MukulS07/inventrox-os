@@ -50,7 +50,7 @@ function ContactPage() {
             <ul className="mt-10 space-y-4">
               {channels.map((c) => (
                 <li key={c.label} className="glass flex items-center gap-4 p-4">
-                  <span className="grid size-10 place-items-center rounded-xl bg-roast/12 text-roast">
+                  <span className="grid size-10 place-items-center rounded-xl bg-accent text-roast">
                     <c.icon className="size-5" />
                   </span>
                   <div>

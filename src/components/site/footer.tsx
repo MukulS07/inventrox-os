@@ -60,7 +60,7 @@ export function SiteFooter() {
           </ul>
         </div>
       </div>
-      <div className="border-t border-border/60 py-5 text-center text-xs text-muted-foreground">
+      <div className="border-t border-rule py-5 text-center text-xs text-muted-foreground">
         © {new Date().getFullYear()} INVENTROX. All rights reserved.
       </div>
     </footer>

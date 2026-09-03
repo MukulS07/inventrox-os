@@ -27,7 +27,7 @@ function PricingPage() {
     <div className="min-h-screen bg-background">
       <SiteNav />
       <main>
-        <section className="hero-glow border-b border-border/60">
+        <section className="hero-glow border-b border-rule">
           <div className="mx-auto max-w-3xl px-5 py-24 text-center">
             <Reveal>
               <h1 className="text-balance text-5xl font-semibold md:text-6xl">

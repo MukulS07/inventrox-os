@@ -86,10 +86,10 @@ const inr = (n: number) => `₹${n.toLocaleString("en-IN")}`;
 
 function categoryChip(c: Category) {
   const map: Record<Category, string> = {
-    Coffee: "bg-roast/12 text-roast",
+    Coffee: "bg-accent text-roast",
     Syrups: "bg-chart-5/15 text-chart-5",
     Milks: "bg-chart-3/15 text-chart-3",
-    Packaging: "bg-signal/12 text-signal",
+    Packaging: "bg-sage text-signal",
     Accessories: "bg-chart-4/15 text-chart-4",
     Apparel: "bg-chart-5/12 text-chart-5",
   };
@@ -122,7 +122,7 @@ function Dashboard() {
         )}
       >
         <div className="flex h-16 items-center gap-2.5 px-4">
-          <Link to="/" className="grid size-8 shrink-0 place-items-center rounded-lg bg-[image:var(--gradient-roast)] text-sm font-bold text-roast-foreground">
+          <Link to="/" className="grid size-8 shrink-0 place-items-center rounded-lg bg-foreground font-mono text-xs font-bold text-background">
             IX
           </Link>
           {!collapsed && <span className="font-display font-semibold">INVENTROX</span>}
@@ -136,7 +136,7 @@ function Dashboard() {
               className={cn(
                 "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors",
                 tab === n.id
-                  ? "bg-roast/12 text-roast"
+                  ? "bg-accent text-roast"
                   : "text-muted-foreground hover:bg-sidebar-accent hover:text-foreground",
               )}
             >
@@ -183,7 +183,7 @@ function Dashboard() {
             <kbd className="hidden rounded bg-muted px-1.5 py-0.5 text-[10px] sm:inline">⌘K</kbd>
           </button>
 
-          <span className="hidden items-center gap-1.5 rounded-full bg-signal/10 px-2.5 py-1 text-xs text-signal sm:inline-flex">
+          <span className="hidden items-center gap-1.5 rounded-full bg-sage px-2.5 py-1 text-xs text-signal sm:inline-flex">
             <Activity className="size-3.5" /> Synced
           </span>
           <Bell className="size-4 text-muted-foreground" />
@@ -200,7 +200,7 @@ function Dashboard() {
               onClick={() => setTab(n.id)}
               className={cn(
                 "whitespace-nowrap rounded-full border border-border px-3 py-1.5 text-xs",
-                tab === n.id ? "border-roast/50 bg-roast/12 text-roast" : "text-muted-foreground",
+                tab === n.id ? "border-roast/50 bg-accent text-roast" : "text-muted-foreground",
               )}
             >
               {n.label}
@@ -371,7 +371,7 @@ function Overview() {
               </thead>
               <tbody>
                 {sales.map((s) => (
-                  <tr key={s.id} className="border-t border-border/60">
+                  <tr key={s.id} className="border-t border-rule">
                     <td className="py-2.5 tabular">{s.invoice_number}</td>
                     <td className="py-2.5">{s.customer_name}</td>
                     <td className="py-2.5">
@@ -392,7 +392,7 @@ function Overview() {
         <h2 className="text-sm font-semibold">Top customers by LTV</h2>
         <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
           {customers.map((c) => (
-            <div key={c.id} className="rounded-xl border border-border bg-card/50 p-4">
+            <div key={c.id} className="rounded-xl border border-border bg-card p-4">
               <p className="text-sm font-medium">{c.name}</p>
               <p className="text-xs text-muted-foreground">{c.segment}</p>
               <p className="mt-3 text-lg font-semibold tabular">{inr(c.ltv)}</p>
@@ -435,7 +435,7 @@ function ProductsTab() {
           </thead>
           <tbody>
             {products.map((p) => (
-              <tr key={p.id} className="border-t border-border/60 hover:bg-accent/40">
+              <tr key={p.id} className="border-t border-rule hover:bg-accent/40">
                 <td className="p-4 tabular text-muted-foreground">{p.sku}</td>
                 <td className="p-4">
                   <p>{p.name}</p>
@@ -462,7 +462,7 @@ function ProductsTab() {
                       "rounded-full px-2.5 py-0.5 text-xs tabular",
                       p.stock <= p.reorder_point
                         ? "bg-destructive/12 text-destructive"
-                        : "bg-signal/12 text-signal",
+                        : "bg-sage text-signal",
                     )}
                   >
                     {p.stock} {p.unit}
@@ -515,7 +515,7 @@ function PosTab() {
               <button
                 key={p.id}
                 onClick={() => add(p.id, 1)}
-                className="rounded-xl border border-border bg-card/50 p-4 text-left transition-colors hover:border-roast/50 hover:bg-accent/50"
+                className="rounded-xl border border-border bg-card p-4 text-left transition-colors hover:border-roast/50 hover:bg-accent/50"
               >
                 <span
                   className={cn("rounded-full px-2 py-0.5 text-[11px]", categoryChip(p.category))}
@@ -608,7 +608,7 @@ function AiWidget() {
       )}
       <button
         onClick={() => setOpen((v) => !v)}
-        className="ml-auto flex size-12 items-center justify-center rounded-full bg-[image:var(--gradient-roast)] text-roast-foreground shadow-[var(--shadow-glow)]"
+        className="ml-auto flex size-12 items-center justify-center rounded-full bg-foreground text-background shadow-[var(--shadow-pop)]"
         aria-label="Toggle AI insights"
       >
         <Sparkles className="size-5" />
