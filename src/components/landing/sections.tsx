@@ -37,8 +37,8 @@ function SectionHead({
 }) {
   return (
     <Reveal className="mx-auto max-w-2xl text-center">
-      <p className="text-xs font-medium uppercase tracking-[0.18em] text-roast">{eyebrow}</p>
-      <h2 className="mt-3 text-balance text-3xl font-semibold md:text-5xl">{title}</h2>
+      <p className="label-mono">{eyebrow}</p>
+      <h2 className="mt-4 text-balance text-3xl leading-[1.1] md:text-[2.5rem]">{title}</h2>
       {sub && <p className="mt-4 text-muted-foreground">{sub}</p>}
     </Reveal>
   );
@@ -65,15 +65,15 @@ const problems = [
 
 export function Problems() {
   return (
-    <section className="mx-auto max-w-7xl px-5 py-24">
+    <section className="mx-auto max-w-[1200px] px-6 lg:px-10 py-24">
       <SectionHead
         eyebrow="The cost of manual ops"
         title="Signs your operations are capping your growth"
       />
       <div className="mt-14 grid gap-5 md:grid-cols-3">
         {problems.map((x, i) => (
-          <Reveal key={x.title} delay={i * 90} className="glass p-6">
-            <span className="grid size-10 place-items-center rounded-xl bg-roast/12 text-roast">
+          <Reveal key={x.title} delay={i * 90} className="glass card-hover p-6">
+            <span className="grid size-10 place-items-center rounded-xl bg-accent text-roast">
               <x.icon className="size-5" />
             </span>
             <h3 className="mt-5 text-lg font-semibold">{x.title}</h3>
@@ -88,15 +88,15 @@ export function Problems() {
 /* 3 — Feature bento */
 export function Bento() {
   return (
-    <section className="mx-auto max-w-7xl px-5 py-24">
+    <section className="mx-auto max-w-[1200px] px-6 lg:px-10 py-24">
       <SectionHead
         eyebrow="One platform"
         title="Every module writes to the same source of truth"
         sub="Catalog, inventory, POS, invoicing, CRM and BI share one tenant-scoped ledger — no exports, no drift."
       />
       <div className="mt-14 grid gap-4 md:grid-cols-3 md:grid-rows-2">
-        <Reveal className="glass p-7 md:col-span-2 md:row-span-1">
-          <span className="grid size-10 place-items-center rounded-xl bg-signal/12 text-signal">
+        <Reveal className="glass card-hover p-7 md:col-span-2 md:row-span-1">
+          <span className="grid size-10 place-items-center rounded-xl bg-sage text-signal">
             <Boxes className="size-5" />
           </span>
           <h3 className="mt-5 text-xl font-semibold">Inventory ledger with audit trail</h3>
@@ -110,7 +110,7 @@ export function Bento() {
               ["Valuation", "₹41.2L"],
               ["Low stock", "12"],
             ].map(([k, v]) => (
-              <div key={k} className="rounded-xl border border-border bg-card/60 p-3">
+              <div key={k} className="rounded-xl border border-border bg-card p-3">
                 <p className="text-[11px] text-muted-foreground">{k}</p>
                 <p className="mt-1 text-lg font-semibold tabular">{v}</p>
               </div>
@@ -118,8 +118,8 @@ export function Bento() {
           </div>
         </Reveal>
 
-        <Reveal delay={90} className="glass p-7">
-          <span className="grid size-10 place-items-center rounded-xl bg-roast/12 text-roast">
+        <Reveal delay={90} className="glass card-hover p-7">
+          <span className="grid size-10 place-items-center rounded-xl bg-accent text-roast">
             <Sparkles className="size-5" />
           </span>
           <h3 className="mt-5 text-xl font-semibold">AI rate-list extractor</h3>
@@ -129,8 +129,8 @@ export function Bento() {
           </p>
         </Reveal>
 
-        <Reveal delay={60} className="glass p-7">
-          <span className="grid size-10 place-items-center rounded-xl bg-signal/12 text-signal">
+        <Reveal delay={60} className="glass card-hover p-7">
+          <span className="grid size-10 place-items-center rounded-xl bg-sage text-signal">
             <CreditCard className="size-5" />
           </span>
           <h3 className="mt-5 text-xl font-semibold">POS console</h3>
@@ -140,8 +140,8 @@ export function Bento() {
           </p>
         </Reveal>
 
-        <Reveal delay={120} className="glass p-7 md:col-span-2">
-          <span className="grid size-10 place-items-center rounded-xl bg-roast/12 text-roast">
+        <Reveal delay={120} className="glass card-hover p-7 md:col-span-2">
+          <span className="grid size-10 place-items-center rounded-xl bg-accent text-roast">
             <BarChart3 className="size-5" />
           </span>
           <h3 className="mt-5 text-xl font-semibold">BI that computes on the server</h3>
@@ -235,7 +235,7 @@ export function WorkflowExplorer() {
 
 
   return (
-    <section className="mx-auto max-w-7xl px-5 py-24">
+    <section className="mx-auto max-w-[1200px] px-6 lg:px-10 py-24">
       <SectionHead
         eyebrow="Explore workflows"
         title="See what a day on INVENTROX looks like"
@@ -248,7 +248,7 @@ export function WorkflowExplorer() {
             className={cn(
               "inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm transition-colors",
               active === w.id
-                ? "border-roast/50 bg-roast/12 text-roast"
+                ? "border-roast/50 bg-accent text-roast"
                 : "text-muted-foreground hover:text-foreground",
             )}
           >
@@ -270,7 +270,7 @@ export function WorkflowExplorer() {
         </div>
         <div
           key={`${current.id}-panel`}
-          className="animate-in fade-in slide-in-from-bottom-3 rounded-2xl border border-border bg-card/70 p-5 duration-500"
+          className="animate-in fade-in slide-in-from-bottom-3 rounded-2xl border border-border bg-card p-5 duration-500"
         >
           <div className="flex items-center justify-between border-b border-border pb-3">
             <span className="text-xs uppercase tracking-widest text-muted-foreground">
@@ -279,7 +279,7 @@ export function WorkflowExplorer() {
             <span
               className={cn(
                 "rounded-full px-2 py-0.5 text-[11px]",
-                current.tone === "signal" ? "bg-signal/12 text-signal" : "bg-roast/12 text-roast",
+                current.tone === "signal" ? "bg-sage text-signal" : "bg-accent text-roast",
               )}
             >
               live mock
@@ -327,8 +327,8 @@ const roadmap = [
 
 export function Roadmap() {
   return (
-    <section className="border-y border-border/60 bg-card/30">
-      <div className="mx-auto max-w-7xl px-5 py-24">
+    <section className="border-y border-rule bg-sky">
+      <div className="mx-auto max-w-[1200px] px-6 lg:px-10 py-24">
         <SectionHead eyebrow="Path to go-live" title="Live in three weeks, not three quarters" />
         <div className="mt-14 grid gap-5 md:grid-cols-3">
           {roadmap.map((s, i) => (
@@ -366,7 +366,7 @@ const trust = [
 
 export function TrustGrid() {
   return (
-    <section className="mx-auto max-w-7xl px-5 py-24">
+    <section className="mx-auto max-w-[1200px] px-6 lg:px-10 py-24">
       <SectionHead
         eyebrow="Enterprise ready"
         title="Built for teams that get audited"
@@ -374,7 +374,7 @@ export function TrustGrid() {
       />
       <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {trust.map((t, i) => (
-          <Reveal key={t.title} delay={(i % 4) * 70} className="glass p-6">
+          <Reveal key={t.title} delay={(i % 4) * 70} className="glass card-hover p-6">
             <t.icon className="size-5 text-signal" />
             <h3 className="mt-4 text-sm font-semibold">{t.title}</h3>
             <p className="mt-1.5 text-sm text-muted-foreground">{t.body}</p>
@@ -394,7 +394,7 @@ export function StatsBand() {
     { label: "Sync uptime", value: 99.98, decimals: 2, suffix: "%" },
   ];
   return (
-    <section className="border-y border-border/60 bg-card/30">
+    <section className="border-y border-rule bg-butter">
       <div className="mx-auto grid max-w-7xl gap-8 px-5 py-16 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((s, i) => (
           <Reveal key={s.label} delay={i * 80} className="text-center">
@@ -417,7 +417,7 @@ export function StatsBand() {
 /* 8 — Social proof */
 export function SocialProof() {
   return (
-    <section className="mx-auto max-w-7xl px-5 py-24">
+    <section className="mx-auto max-w-[1200px] px-6 lg:px-10 py-24">
       <SectionHead
         eyebrow="Social proof"
         title="Trusted by operators who count every unit"
@@ -425,7 +425,7 @@ export function SocialProof() {
       />
       <div className="mt-12 grid gap-4 md:grid-cols-3">
         {[0, 1, 2].map((i) => (
-          <Reveal key={i} delay={i * 90} className="glass p-7">
+          <Reveal key={i} delay={i * 90} className="glass card-hover p-7">
             <div className="h-6 w-28 rounded bg-foreground/8" />
             <div className="mt-5 space-y-2.5">
               <div className="h-3 w-full rounded bg-foreground/6" />
@@ -472,8 +472,8 @@ const pipeline = [
 
 export function Crm() {
   return (
-    <section className="border-y border-border/60 bg-card/30">
-      <div className="mx-auto max-w-7xl px-5 py-24">
+    <section className="border-y border-rule bg-sage">
+      <div className="mx-auto max-w-[1200px] px-6 lg:px-10 py-24">
         <SectionHead
           eyebrow="CRM, built into the ledger"
           title="Every sale deepens the relationship graph"
@@ -495,7 +495,7 @@ export function Crm() {
                 v: "Invoices, payments, visits and notes on a single customer record.",
               },
             ].map((f) => (
-              <div key={f.k} className="glass p-5">
+              <div key={f.k} className="glass card-hover p-5">
                 <h3 className="text-sm font-semibold">{f.k}</h3>
                 <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{f.v}</p>
               </div>
@@ -503,11 +503,11 @@ export function Crm() {
           </Reveal>
 
           <Reveal delay={120} className="glass-strong p-5 md:p-6">
-            <div className="flex items-center justify-between border-b border-border/60 pb-3">
+            <div className="flex items-center justify-between border-b border-rule pb-3">
               <span className="text-xs uppercase tracking-widest text-muted-foreground">
                 Account pipeline
               </span>
-              <span className="rounded-full bg-signal/12 px-2 py-0.5 text-[11px] text-signal">
+              <span className="rounded-full bg-sage px-2 py-0.5 text-[11px] text-signal">
                 live mock
               </span>
             </div>
@@ -526,7 +526,7 @@ export function Crm() {
                     {col.accounts.map((a) => (
                       <div
                         key={a.name}
-                        className="rounded-xl border border-border bg-card/70 p-3 transition-colors hover:border-roast/40"
+                        className="rounded-xl border border-border bg-card p-3 transition-colors hover:border-roast/40"
                       >
                         <p className="truncate text-xs font-medium">{a.name}</p>
                         <p className="mt-1 text-[10px] leading-snug text-muted-foreground">
@@ -538,7 +538,7 @@ export function Crm() {
                 </div>
               ))}
             </div>
-            <div className="mt-5 flex items-center justify-between rounded-xl border border-roast/30 bg-roast/8 px-4 py-3">
+            <div className="mt-5 flex items-center justify-between rounded-xl border border-roast/40 bg-accent px-4 py-3">
               <span className="flex items-center gap-2 text-xs text-muted-foreground">
                 <Sparkles className="size-3.5 text-roast" />
                 AI play: win back Verde Bistro with a WhatsApp nudge
@@ -593,7 +593,7 @@ export const plans = [
 
 export function Pricing({ compact = false }: { compact?: boolean }) {
   return (
-    <section className="mx-auto max-w-7xl px-5 py-24">
+    <section className="mx-auto max-w-[1200px] px-6 lg:px-10 py-24">
       {!compact && (
         <SectionHead
           eyebrow="Pricing"
@@ -608,11 +608,11 @@ export function Pricing({ compact = false }: { compact?: boolean }) {
             delay={i * 90}
             className={cn(
               "glass relative flex flex-col p-7",
-              plan.popular && "border-roast/40 shadow-[var(--shadow-glow)]",
+              plan.popular && "border-[1.5px] border-foreground/60",
             )}
           >
             {plan.popular && (
-              <span className="absolute -top-3 left-7 rounded-full bg-[image:var(--gradient-roast)] px-3 py-1 text-[11px] font-medium text-roast-foreground">
+              <span className="absolute -top-3 left-7 rounded-full bg-foreground px-3 py-1 font-mono text-[10px] uppercase tracking-[0.12em] text-background">
                 Most popular
               </span>
             )}
@@ -640,7 +640,7 @@ export function Pricing({ compact = false }: { compact?: boolean }) {
 /* 10 — Final CTA */
 export function FinalCTA() {
   return (
-    <section className="relative overflow-hidden border-t border-border/60 hero-glow">
+    <section className="relative overflow-hidden border-t border-rule bg-blush">
       <div className="mx-auto max-w-4xl px-5 py-28 text-center">
         <Reveal>
           <Layers className="mx-auto size-8 text-roast" />

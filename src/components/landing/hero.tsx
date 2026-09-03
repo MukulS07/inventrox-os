@@ -1,216 +1,159 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowRight, Zap, ShieldCheck } from "lucide-react";
+import { ArrowRight, Boxes, Check, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/site/reveal";
-import { CountUp } from "@/components/site/count-up";
 import { customers, revenueSeries } from "@/data/mock";
 
-function Sparkbars() {
-  const max = Math.max(...revenueSeries.map((d) => d.value));
-  return (
-    <div className="flex h-12 items-end gap-1.5">
-      {revenueSeries.map((d, i) => (
-        <div
-          key={d.label}
-          className="w-full flex-1 rounded-[2px] bg-roast/80"
-          style={{
-            height: `${Math.max(18, (d.value / max) * 100)}%`,
-            opacity: i > revenueSeries.length - 4 ? 1 : 0.45,
-          }}
-        />
-      ))}
-    </div>
-  );
-}
+const rows = [
+  { sku: "INVX-00231", name: "Colombia Supremo 1kg", qty: 128, status: "In stock" as const },
+  { sku: "INVX-00417", name: "House Blend 500g", qty: 6, status: "Low stock" as const },
+  { sku: "INVX-00902", name: "Barista Oat Milk 1L", qty: 74, status: "In stock" as const },
+  { sku: "INVX-01144", name: "Ethiopia Yirgacheffe", qty: 0, status: "Out of stock" as const },
+];
+
+const statusTone: Record<string, string> = {
+  "In stock": "bg-sage text-signal",
+  "Low stock": "bg-butter text-warning",
+  "Out of stock": "bg-blush text-destructive",
+};
 
 export function Hero() {
+  const max = Math.max(...revenueSeries.map((d) => d.value));
+
   return (
-    <section className="relative overflow-hidden hero-glow">
-      <div className="mx-auto max-w-7xl px-5 pb-40 pt-20 md:pt-24">
-        {/* Headline block */}
-        <Reveal className="mx-auto max-w-4xl text-center">
-          <span className="inline-flex items-center gap-2 rounded-full border border-border bg-glass px-3 py-1 backdrop-blur">
-            <span className="relative flex size-2">
-              <span className="absolute inline-flex size-full rounded-full bg-signal opacity-70 ring-pulse" />
-              <span className="relative inline-flex size-2 rounded-full bg-signal" />
-            </span>
-            <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
-              System status: live operations
-            </span>
+    <section className="border-b border-rule">
+      <div className="mx-auto grid max-w-[1200px] items-center gap-14 px-6 py-20 lg:grid-cols-[1.05fr_1fr] lg:gap-16 lg:px-10 lg:py-28">
+        {/* Left — editorial column */}
+        <Reveal>
+          <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1">
+            <span className="size-1.5 rounded-full bg-signal" />
+            <span className="label-mono">Inventory · POS · CRM</span>
           </span>
 
-          <h1 className="mt-7 text-balance text-5xl font-semibold leading-[1.02] tracking-tight md:text-7xl">
-            The intelligence layer for{" "}
-            <span className="text-gradient-roast">modern operations</span>
+          <h1 className="mt-7 text-balance text-[2.75rem] leading-[1.04] tracking-tight md:text-6xl">
+            Inventory that{" "}
+            <span className="serif-accent text-roast">actually</span> matches your shelf.
           </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground">
-            INVENTROX unifies inventory, POS billing, GST invoicing, CRM and AI forecasting into one
-            tenant-isolated command center — synchronized to the second, resilient offline.
+
+          <p className="mt-6 max-w-lg text-[1.0625rem] leading-relaxed text-muted-foreground">
+            INVENTROX keeps stock, billing, GST invoicing and customer history in one place — so
+            every sale updates the ledger, the shelf count and the relationship at once.
           </p>
-          <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
-            <Button size="lg" asChild>
+
+          <div className="mt-9 flex flex-wrap items-center gap-3">
+            <Button size="lg" className="rounded-full px-7" asChild>
               <Link to="/dashboard">
-                Start free <ArrowRight className="size-4" />
+                Start for free <ArrowRight className="size-4" />
               </Link>
             </Button>
-            <Button size="lg" variant="outline" asChild>
-              <Link to="/dashboard">See the live console</Link>
+            <Button size="lg" variant="outline" className="rounded-full px-7" asChild>
+              <Link to="/contact">Get a demo</Link>
             </Button>
           </div>
+
+          <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-2">
+            {["No card required", "Import from Excel or Tally", "Live in a week"].map((f) => (
+              <li key={f} className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Check className="size-4 text-signal" /> {f}
+              </li>
+            ))}
+          </ul>
         </Reveal>
 
-        {/* Command center visual — stacked glass */}
-        <Reveal delay={140} className="relative mx-auto mt-24 aspect-[16/10] w-full max-w-5xl md:aspect-[16/9]">
-          {/* ambient glows */}
-          <div className="pointer-events-none absolute -left-24 -top-24 size-64 rounded-full bg-roast/10 blur-[100px]" />
-          <div className="pointer-events-none absolute -bottom-24 -right-24 size-96 rounded-full bg-signal/[0.07] blur-[120px]" />
-
-          {/* Layer 1 — frame + dot grid */}
-          <div className="absolute inset-0 overflow-hidden rounded-[24px] border border-border/60 bg-glass backdrop-blur-sm">
-            <div className="absolute inset-0 grid-dots opacity-60" />
-          </div>
-
-          {/* Layer 2 — main canvas */}
-          <div className="glass-strong absolute inset-4 z-10 flex flex-col overflow-hidden rounded-[18px] p-6 shadow-[var(--shadow-glass)] md:inset-6 md:p-8">
-            {/* radar rings */}
-            <div className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-40">
-              <div className="grid size-[26rem] place-items-center rounded-full border border-border">
-                <div className="grid size-64 place-items-center rounded-full border border-border">
-                  <div className="size-32 rounded-full border border-roast/25 ring-pulse" />
-                </div>
-              </div>
-            </div>
-            {/* scan sweep */}
-            <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-transparent via-signal/[0.07] to-transparent scan-sweep" />
-
-            <div className="relative flex items-start justify-between">
-              <div>
-                <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                  Revenue this week
-                </p>
-                <p className="mt-1 text-3xl font-semibold tabular md:text-4xl">
-                  <CountUp value={820000} prefix="₹" />
-                </p>
-              </div>
-              <div className="hidden gap-8 text-right sm:flex lg:mr-44">
-                <div>
-                  <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                    Orders
-                  </p>
-                  <p className="mt-1 text-xl font-semibold tabular">
-                    <CountUp value={1284} />
-                  </p>
-                </div>
-                <div>
-                  <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                    Avg. order
-                  </p>
-                  <p className="mt-1 text-xl font-semibold tabular">
-                    <CountUp value={638} prefix="₹" />
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* main trend */}
-            <div className="relative mt-8 flex flex-1 items-end gap-2 md:gap-3">
-              {revenueSeries.map((d, i) => {
-                const max = Math.max(...revenueSeries.map((x) => x.value));
-                const last = i === revenueSeries.length - 1;
-                return (
-                  <div key={d.label} className="flex h-full flex-1 flex-col justify-end gap-2">
-                    <div
-                      className={`w-full rounded-t-md ${last ? "bg-roast" : "bg-signal/60"}`}
-                      style={{ height: `${Math.max(12, (d.value / max) * 92)}%` }}
-                    />
-                    <span className="text-center text-[10px] text-muted-foreground">{d.label}</span>
-                  </div>
-                );
-              })}
-            </div>
-
-            <div className="relative mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-border/60 pt-4 font-mono text-[10px] tracking-[0.18em] text-muted-foreground/70">
-              <div className="flex gap-6">
-                <span>STREAM_ID // INVX-882</span>
-                <span className="hidden sm:inline">TENANT // ISOLATED_RLS</span>
-              </div>
-              <span className="text-signal">SYNC · VERIFIED</span>
-            </div>
-          </div>
-
-          {/* Layer 3 — throughput panel */}
-          <div className="glass-strong absolute -bottom-14 left-2 z-20 hidden w-60 rounded-2xl bg-card/90 p-5 shadow-[var(--shadow-glass)] float-a lg:block lg:-left-16">
-            <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-              Throughput rate
-            </p>
-            <p className="mt-1 text-2xl font-semibold tabular text-signal">
-              <CountUp value={14289} />
-              <span className="ml-1 text-[10px] font-normal text-muted-foreground">u/hr</span>
-            </p>
-            <div className="mt-4">
-              <Sparkbars />
-            </div>
-          </div>
-
-          {/* Layer 4 — top accounts (CRM) */}
-          <div className="glass-strong absolute -right-6 -top-40 z-30 hidden w-60 rounded-xl p-4 shadow-[var(--shadow-glass)] float-b lg:block lg:-right-20">
-            <div className="flex items-center justify-between">
-              <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                Top accounts
-              </p>
-              <span className="rounded-full bg-signal/12 px-2 py-0.5 text-[9px] font-medium uppercase tracking-[0.14em] text-signal">
-                CRM live
+        {/* Right — real product surface, bordered */}
+        <Reveal delay={120} className="relative">
+          <div className="glass overflow-hidden">
+            <div className="flex items-center justify-between border-b border-rule px-5 py-3.5">
+              <span className="flex items-center gap-2 text-sm font-medium">
+                <Boxes className="size-4" /> Stock overview
               </span>
+              <span className="label-mono">Synced 12:04</span>
             </div>
-            <ul className="mt-3 space-y-3">
-              {customers.slice(0, 3).map((c) => (
-                <li key={c.id} className="flex items-center gap-2.5">
-                  <span className="grid size-6 shrink-0 place-items-center rounded-md bg-roast/15 text-[9px] font-semibold text-roast">
-                    {c.name.slice(0, 2).toUpperCase()}
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-[11px] font-medium leading-tight">{c.name}</p>
-                    <p className="text-[9px] text-muted-foreground">
-                      {c.segment} · {c.orders_count} orders
-                    </p>
-                  </div>
-                  <span className="text-[11px] font-semibold tabular text-signal">
-                    ₹{(c.ltv / 100000).toFixed(1)}L
-                  </span>
-                </li>
+
+            <div className="grid grid-cols-3 divide-x divide-[var(--rule)] border-b border-rule">
+              {[
+                ["SKUs", "3,482"],
+                ["Valuation", "₹41.2L"],
+                ["Low stock", "12"],
+              ].map(([k, v]) => (
+                <div key={k} className="px-5 py-4">
+                  <p className="label-mono">{k}</p>
+                  <p className="mt-1 text-xl font-semibold tabular">{v}</p>
+                </div>
               ))}
-            </ul>
-            <p className="mt-3 border-t border-border/60 pt-2 text-[10px] text-muted-foreground">
-              Relationship LTV <span className="tabular text-foreground">₹9.7L</span> tracked
-            </p>
-          </div>
+            </div>
 
+            <table className="w-full text-left">
+              <thead>
+                <tr className="border-b border-rule">
+                  {["SKU", "Item", "Qty", "Status"].map((h) => (
+                    <th key={h} className="label-mono px-5 py-2.5 font-normal">
+                      {h}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {rows.map((r) => (
+                  <tr
+                    key={r.sku}
+                    className="border-b border-rule transition-colors last:border-0 hover:bg-accent/60"
+                  >
+                    <td className="px-5 py-3 font-mono text-xs text-muted-foreground">{r.sku}</td>
+                    <td className="px-5 py-3 text-sm">{r.name}</td>
+                    <td className="px-5 py-3 text-sm tabular">{r.qty}</td>
+                    <td className="px-5 py-3">
+                      <span
+                        className={`rounded-full px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.1em] ${statusTone[r.status]}`}
+                      >
+                        {r.status}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
 
-          {/* Layer 5 — AI insight */}
-          <div className="absolute -bottom-16 right-2 z-40 hidden w-72 rounded-2xl border border-roast/40 bg-card p-5 shadow-[var(--shadow-glow)] float-c lg:block lg:-right-12">
-            <div className="flex items-start gap-3">
-              <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-roast text-roast-foreground">
-                <Zap className="size-4" />
-              </span>
-              <div>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-roast">
-                  Critical flux
-                </p>
-                <p className="mt-1 text-sm leading-snug">
-                  Yirgacheffe — <span className="tabular">4 days</span> to stockout. Reorder 24
-                  packs.
-                </p>
-              </div>
+            <div className="flex items-end gap-1.5 border-t border-rule px-5 py-4">
+              {revenueSeries.map((d, i) => (
+                <div key={d.label} className="flex flex-1 flex-col items-center gap-2">
+                  <div
+                    className={`w-full rounded-sm ${
+                      i === revenueSeries.length - 1 ? "bg-roast" : "bg-foreground/12"
+                    }`}
+                    style={{ height: `${Math.max(6, (d.value / max) * 44)}px` }}
+                  />
+                  <span className="label-mono text-[9px]">{d.label}</span>
+                </div>
+              ))}
             </div>
           </div>
 
-          {/* Layer 6 — HUD pill */}
-          <div className="absolute -bottom-6 left-1/2 z-50 hidden -translate-x-1/2 items-center gap-4 rounded-full border border-border bg-card px-6 py-3 font-mono text-[10px] sm:flex">
-            <span className="flex items-center gap-2 text-muted-foreground">
-              <ShieldCheck className="size-3 text-signal" /> AUDIT TRAIL: ON
+          {/* Assistant card — the one overlay allowed a shadow */}
+          <div className="glass-strong absolute -bottom-14 left-2 hidden w-64 p-4 shadow-[var(--shadow-pop)] lg:block lg:-left-14">
+            <div className="flex items-center gap-2">
+              <span className="grid size-7 place-items-center rounded-full border border-foreground/70">
+                <Sparkles className="size-3.5" />
+              </span>
+              <span className="label-mono">Reorder assistant</span>
+            </div>
+            <p className="mt-3 text-sm leading-snug">
+              Yirgacheffe hits zero in <span className="tabular font-medium">4 days</span>. Draft a
+              PO for 24 packs?
+            </p>
+          </div>
+
+          {/* Top account chip */}
+          <div className="glass absolute -right-4 -top-11 hidden items-center gap-2.5 px-3.5 py-2.5 lg:flex">
+            <span className="grid size-7 place-items-center rounded-full bg-accent font-mono text-[10px] font-semibold text-accent-foreground">
+              {customers[0]!.name.slice(0, 2).toUpperCase()}
             </span>
-            <span className="h-3 w-px bg-border" />
-            <span className="text-signal">UPTIME 99.98%</span>
+            <div>
+              <p className="text-xs font-medium leading-tight">{customers[0]!.name}</p>
+              <p className="label-mono text-[9px]">
+                LTV ₹{(customers[0]!.ltv / 100000).toFixed(1)}L
+              </p>
+            </div>
           </div>
         </Reveal>
       </div>

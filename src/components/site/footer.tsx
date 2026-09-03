@@ -2,11 +2,11 @@ import { Link } from "@tanstack/react-router";
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-border/60 bg-background">
-      <div className="mx-auto grid max-w-7xl gap-10 px-5 py-14 md:grid-cols-4">
+    <footer className="border-t border-rule bg-background">
+      <div className="mx-auto grid max-w-[1200px] gap-10 px-6 py-14 md:grid-cols-4 lg:px-10">
         <div>
           <div className="flex items-center gap-2.5">
-            <span className="grid size-8 place-items-center rounded-lg bg-[image:var(--gradient-roast)] text-sm font-bold text-roast-foreground">
+            <span className="grid size-8 place-items-center rounded-lg bg-foreground font-mono text-xs font-bold text-background">
               IX
             </span>
             <span className="font-display text-lg font-semibold">INVENTROX</span>
@@ -60,7 +60,7 @@ export function SiteFooter() {
           </ul>
         </div>
       </div>
-      <div className="border-t border-border/60 py-5 text-center text-xs text-muted-foreground">
+      <div className="border-t border-rule py-5 text-center text-xs text-muted-foreground">
         © {new Date().getFullYear()} INVENTROX. All rights reserved.
       </div>
     </footer>
