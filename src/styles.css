@@ -158,6 +158,7 @@
   border: 1px solid var(--glass-border);
   backdrop-filter: blur(var(--glass-blur));
   border-radius: 1rem;
+  box-shadow: inset 0 1px 0 oklch(1 0 0 / 6%);
 }
 
 @utility glass-strong {
@@ -165,6 +166,17 @@
   border: 1px solid var(--glass-border);
   backdrop-filter: blur(var(--glass-blur));
   border-radius: 1rem;
+  box-shadow: inset 0 1px 0 oklch(1 0 0 / 8%);
+}
+
+@utility text-gradient-roast {
+  background-image: var(--gradient-roast);
+  background-clip: text;
+  color: transparent;
+}
+
+@utility fade-y {
+  mask-image: linear-gradient(to bottom, transparent, black 12%, black 88%, transparent);
 }
 
 @utility tabular {
