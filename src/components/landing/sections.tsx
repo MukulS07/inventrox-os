@@ -327,7 +327,7 @@ const roadmap = [
 
 export function Roadmap() {
   return (
-    <section className="border-y border-rule bg-card/30">
+    <section className="border-y border-rule bg-sky">
       <div className="mx-auto max-w-[1200px] px-6 lg:px-10 py-24">
         <SectionHead eyebrow="Path to go-live" title="Live in three weeks, not three quarters" />
         <div className="mt-14 grid gap-5 md:grid-cols-3">
@@ -394,7 +394,7 @@ export function StatsBand() {
     { label: "Sync uptime", value: 99.98, decimals: 2, suffix: "%" },
   ];
   return (
-    <section className="border-y border-rule bg-card/30">
+    <section className="border-y border-rule bg-butter">
       <div className="mx-auto grid max-w-7xl gap-8 px-5 py-16 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((s, i) => (
           <Reveal key={s.label} delay={i * 80} className="text-center">
@@ -472,7 +472,7 @@ const pipeline = [
 
 export function Crm() {
   return (
-    <section className="border-y border-rule bg-card/30">
+    <section className="border-y border-rule bg-sage">
       <div className="mx-auto max-w-[1200px] px-6 lg:px-10 py-24">
         <SectionHead
           eyebrow="CRM, built into the ledger"
@@ -640,7 +640,7 @@ export function Pricing({ compact = false }: { compact?: boolean }) {
 /* 10 — Final CTA */
 export function FinalCTA() {
   return (
-    <section className="relative overflow-hidden border-t border-rule hero-glow">
+    <section className="relative overflow-hidden border-t border-rule bg-blush">
       <div className="mx-auto max-w-4xl px-5 py-28 text-center">
         <Reveal>
           <Layers className="mx-auto size-8 text-roast" />
