@@ -1,48 +1,63 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { AreaTrend, Donut } from "@/components/dash/charts";
+import { useState, useEffect, useMemo } from "react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import {
-  Activity,
-  BarChart3,
-  Bell,
-  Boxes,
-  ChevronDown,
-  CreditCard,
-  FileText,
   LayoutDashboard,
+  Boxes,
+  Package,
+  Tags,
+  Truck,
+  Users,
+  ShoppingCart,
+  FileText,
+  ScanLine,
+  HeartHandshake,
+  BarChart3,
+  Sparkles,
+  Settings,
+  Bell,
+  Search,
+  ChevronLeft,
+  ChevronDown,
+  TrendingUp,
   PanelLeftClose,
   PanelLeft,
-  Search,
-  Settings,
-  Sparkles,
-  TriangleAlert,
-  Users,
+  X,
+  MessageSquare,
+  ClipboardList,
+  FileSpreadsheet,
+  Send,
+  Bot,
 } from "lucide-react";
-import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import {
-  CommandDialog,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import { CountUp } from "@/components/site/count-up";
+import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import {
-  customers,
-  lowStock,
-  products,
-  revenueSeries,
-  sales,
-  valuationByCategory,
-  type Category,
-} from "@/data/mock";
+import MarkdownRenderer from "@/components/ui/markdown-renderer";
 
-const title = "INVENTROX Console — Live product demo";
+// Tab imports
+import InventoryTab from "@/components/dashboard/InventoryTab";
+import ProductsTab from "@/components/dashboard/ProductsTab";
+import CategoriesTab from "@/components/dashboard/CategoriesTab";
+import SuppliersTab from "@/components/dashboard/SuppliersTab";
+import CustomersTab from "@/components/dashboard/CustomersTab";
+import SalesTab from "@/components/dashboard/SalesTab";
+import InvoicesTab from "@/components/dashboard/InvoicesTab";
+import PosTab from "@/components/dashboard/PosTab";
+import CrmTab from "@/components/dashboard/CrmTab";
+import AnalyticsTab from "@/components/dashboard/AnalyticsTab";
+import ReportsTab from "@/components/dashboard/ReportsTab";
+import AiAssistantTab from "@/components/dashboard/AiAssistantTab";
+import SettingsTab from "@/components/dashboard/SettingsTab";
+import RateListTab from "@/components/dashboard/RateListTab";
+import { CommandPalette } from "@/components/dashboard/CommandPalette";
+
+// State provider & data
+import { BusinessStateProvider, useBusinessState } from "@/hooks/use-business-state";
+import { AreaTrend, Donut } from "@/components/dash/charts";
+import { CountUp } from "@/components/site/count-up";
+import { revenueSeries, valuationByCategory } from "@/data/mock";
+
+const title = "INVENTROX Operations Console";
 const description =
-  "Explore the INVENTROX operations console: inventory valuation, low-stock alerts, POS checkout and GST-ready invoicing on realistic demo data.";
+  "Complete operating system for retail, roasteries, and SMEs — Inventory, POS with OTP, CRM service reminders, Rate List, GST invoicing, and AI assistant.";
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
@@ -52,25 +67,50 @@ export const Route = createFileRoute("/dashboard")({
       { property: "og:title", content: title },
       { property: "og:description", content: description },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  component: Dashboard,
+  component: DashboardPage,
 });
 
-type TabId = "overview" | "products" | "pos";
+function DashboardPage() {
+  return (
+    <BusinessStateProvider>
+      <DashboardShell />
+    </BusinessStateProvider>
+  );
+}
 
-const nav: { id: TabId; label: string; icon: typeof LayoutDashboard }[] = [
-  { id: "overview", label: "Overview", icon: LayoutDashboard },
-  { id: "products", label: "Products", icon: Boxes },
-  { id: "pos", label: "POS Console", icon: CreditCard },
-];
-
-const secondaryNav = [
-  { label: "Invoices", icon: FileText },
-  { label: "Customers", icon: Users },
-  { label: "Analytics", icon: BarChart3 },
-  { label: "Settings", icon: Settings },
+const navGroups = [
+  {
+    group: "Core",
+    items: [
+      { id: "Dashboard", label: "Dashboard", icon: LayoutDashboard },
+      { id: "Inventory", label: "Inventory", icon: Boxes },
+      { id: "Products", label: "Products", icon: Package },
+      { id: "Categories", label: "Categories", icon: Tags },
+      { id: "Rate List", label: "Rate List", icon: ClipboardList },
+      { id: "Suppliers", label: "Suppliers", icon: Truck },
+    ],
+  },
+  {
+    group: "Commerce",
+    items: [
+      { id: "Customers", label: "Customers", icon: Users },
+      { id: "Sales", label: "Sales", icon: ShoppingCart },
+      { id: "Invoices", label: "Invoices", icon: FileText },
+      { id: "POS", label: "POS", icon: ScanLine },
+    ],
+  },
+  {
+    group: "Intelligence",
+    items: [
+      { id: "CRM", label: "CRM", icon: HeartHandshake },
+      { id: "Analytics", label: "Analytics", icon: BarChart3 },
+      { id: "Reports", label: "Reports", icon: FileSpreadsheet },
+      { id: "Mini AI", label: "Mini AI", icon: MessageSquare },
+      { id: "Settings", label: "Settings", icon: Settings },
+    ],
+  },
 ];
 
 const chartColors = [
@@ -84,242 +124,289 @@ const chartColors = [
 
 const inr = (n: number) => `₹${n.toLocaleString("en-IN")}`;
 
-function categoryChip(c: Category) {
-  const map: Record<Category, string> = {
-    Coffee: "bg-accent text-roast",
-    Syrups: "bg-chart-5/15 text-chart-5",
-    Milks: "bg-chart-3/15 text-chart-3",
-    Packaging: "bg-sage text-signal",
-    Accessories: "bg-chart-4/15 text-chart-4",
-    Apparel: "bg-chart-5/12 text-chart-5",
-  };
-  return map[c];
-}
-
-function Dashboard() {
-  const [tab, setTab] = useState<TabId>("overview");
+function DashboardShell() {
   const [collapsed, setCollapsed] = useState(false);
-  const [paletteOpen, setPaletteOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("Dashboard");
+  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
 
+  const { products, customers, sales, notifications, markNotificationRead } = useBusinessState();
+  const unreadCount = notifications.filter((n) => !n.read).length;
+
+  // Keybindings (Ctrl+K)
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
-        setPaletteOpen((v) => !v);
+        setIsCommandPaletteOpen((prev) => !prev);
       }
     };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
   return (
-    <div className="flex min-h-screen bg-background">
-      {/* Sidebar */}
+    <div className="flex min-h-screen bg-background text-foreground">
+      {/* Sidebar Navigation */}
       <aside
         className={cn(
           "sticky top-0 hidden h-screen shrink-0 flex-col border-r border-border bg-sidebar transition-all duration-300 md:flex",
           collapsed ? "w-[72px]" : "w-64",
         )}
       >
-        <div className="flex h-16 items-center gap-2.5 px-4">
-          <Link to="/" className="grid size-8 shrink-0 place-items-center rounded-lg bg-foreground font-mono text-xs font-bold text-background">
-            IX
+        {/* Brand Header */}
+        <div className="flex h-16 items-center justify-between px-4 border-b border-border/40">
+          <Link to="/" className="flex items-center gap-2.5">
+            <div className="grid size-8 shrink-0 place-items-center rounded-lg bg-foreground font-mono text-xs font-bold text-background">
+              IX
+            </div>
+            {!collapsed && (
+              <span className="font-display font-bold text-base tracking-tight">INVENTROX</span>
+            )}
           </Link>
-          {!collapsed && <span className="font-display font-semibold">INVENTROX</span>}
+          <button
+            onClick={() => setCollapsed((v) => !v)}
+            className="p-1 rounded-md text-muted-foreground hover:bg-sidebar-accent hover:text-foreground transition-colors"
+          >
+            {collapsed ? <PanelLeft className="size-4" /> : <PanelLeftClose className="size-4" />}
+          </button>
         </div>
 
-        <nav className="flex-1 space-y-1 px-3 py-4">
-          {nav.map((n) => (
-            <button
-              key={n.id}
-              onClick={() => setTab(n.id)}
-              className={cn(
-                "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors",
-                tab === n.id
-                  ? "bg-accent text-roast"
-                  : "text-muted-foreground hover:bg-sidebar-accent hover:text-foreground",
+        {/* Nav Items */}
+        <div className="flex-1 overflow-y-auto px-3 py-4 space-y-5 scrollbar-thin">
+          {navGroups.map((g) => (
+            <div key={g.group} className="space-y-1">
+              {!collapsed && (
+                <p className="px-3 text-[10px] font-700 uppercase tracking-widest text-muted-foreground/70 mb-1">
+                  {g.group}
+                </p>
               )}
-            >
-              <n.icon className="size-4 shrink-0" />
-              {!collapsed && n.label}
-            </button>
-          ))}
-          <div className="my-3 border-t border-sidebar-border" />
-          {secondaryNav.map((n) => (
-            <div
-              key={n.label}
-              className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-muted-foreground/70"
-            >
-              <n.icon className="size-4 shrink-0" />
-              {!collapsed && n.label}
+              {g.items.map((item) => {
+                const Icon = item.icon;
+                const isActive = activeTab === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => setActiveTab(item.id)}
+                    className={cn(
+                      "flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-xs font-600 transition-all cursor-pointer",
+                      isActive
+                        ? "bg-accent text-roast shadow-sm font-700"
+                        : "text-muted-foreground hover:bg-sidebar-accent hover:text-foreground",
+                    )}
+                  >
+                    <Icon className={cn("size-4 shrink-0", isActive && "text-roast")} />
+                    {!collapsed && <span>{item.label}</span>}
+                  </button>
+                );
+              })}
             </div>
           ))}
-        </nav>
+        </div>
 
-        <button
-          onClick={() => setCollapsed((v) => !v)}
-          className="m-3 flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-muted-foreground hover:bg-sidebar-accent"
-        >
-          {collapsed ? <PanelLeft className="size-4" /> : <PanelLeftClose className="size-4" />}
-          {!collapsed && "Collapse"}
-        </button>
+        {/* User Footer */}
+        <div className="border-t border-border/40 p-3 flex items-center gap-3">
+          <div className="size-8 rounded-full bg-accent/20 border border-accent/40 flex items-center justify-center font-mono font-bold text-xs text-accent">
+            MS
+          </div>
+          {!collapsed && (
+            <div className="min-w-0 flex-1">
+              <p className="text-xs font-600 truncate">Mukul Sharma</p>
+              <p className="text-[10px] text-muted-foreground truncate">Admin Operator</p>
+            </div>
+          )}
+        </div>
       </aside>
 
+      {/* Main Content Area */}
       <div className="flex min-w-0 flex-1 flex-col">
-        {/* Topbar */}
-        <header className="sticky top-0 z-40 flex h-16 items-center gap-3 border-b border-border bg-background/80 px-4 backdrop-blur-xl md:px-6">
-          <button className="glass flex items-center gap-2 px-3 py-1.5 text-sm">
-            <span className="size-2 rounded-full bg-signal" />
-            Bluebird Retail
-            <ChevronDown className="size-3.5 text-muted-foreground" />
-          </button>
+        {/* Topbar Header */}
+        <header className="sticky top-0 z-40 flex h-16 items-center justify-between border-b border-border bg-background/80 px-4 backdrop-blur-xl md:px-6">
+          <div className="flex items-center gap-3">
+            <span className="font-display font-700 text-sm md:text-base">{activeTab}</span>
+            <span className="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-sage px-2.5 py-0.5 text-[11px] font-600 text-signal border border-emerald-500/20">
+              <span className="size-1.5 rounded-full bg-signal animate-ping" />
+              Sovereign Ledger Active
+            </span>
+          </div>
 
-          <button
-            onClick={() => setPaletteOpen(true)}
-            className="ml-auto flex items-center gap-2 rounded-lg border border-border px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground"
-          >
-            <Search className="size-4" />
-            <span className="hidden sm:inline">Search…</span>
-            <kbd className="hidden rounded bg-muted px-1.5 py-0.5 text-[10px] sm:inline">⌘K</kbd>
-          </button>
+          <div className="flex items-center gap-3">
+            {/* Command Palette Trigger */}
+            <button
+              onClick={() => setIsCommandPaletteOpen(true)}
+              className="flex items-center gap-2 rounded-xl border border-border bg-secondary/30 px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+            >
+              <Search className="size-3.5" />
+              <span className="hidden sm:inline">Search...</span>
+              <kbd className="rounded bg-muted px-1.5 py-0.5 text-[10px]">Ctrl+K</kbd>
+            </button>
 
-          <span className="hidden items-center gap-1.5 rounded-full bg-sage px-2.5 py-1 text-xs text-signal sm:inline-flex">
-            <Activity className="size-3.5" /> Synced
-          </span>
-          <Bell className="size-4 text-muted-foreground" />
-          <span className="grid size-8 place-items-center rounded-full bg-muted text-xs font-medium">
-            MS
-          </span>
+            {/* Notifications Bell */}
+            <div className="relative">
+              <button
+                onClick={() => setIsNotificationsOpen((v) => !v)}
+                className="p-2 rounded-xl border border-border bg-secondary/30 hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors relative cursor-pointer"
+              >
+                <Bell className="size-4" />
+                {unreadCount > 0 && (
+                  <span className="absolute -top-1 -right-1 size-4 rounded-full bg-rose-500 text-white font-mono text-[9px] font-bold flex items-center justify-center animate-pulse">
+                    {unreadCount}
+                  </span>
+                )}
+              </button>
+
+              {/* Notification Drawer */}
+              {isNotificationsOpen && (
+                <div className="absolute right-0 mt-2 w-80 rounded-2xl border border-border bg-card p-4 shadow-xl z-50 animate-in fade-in duration-200">
+                  <div className="flex items-center justify-between border-b border-border/40 pb-2 mb-3">
+                    <h4 className="font-display font-700 text-xs">Notifications</h4>
+                    <span className="text-[10px] text-muted-foreground font-mono">{unreadCount} unread</span>
+                  </div>
+                  <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
+                    {notifications.length === 0 ? (
+                      <p className="text-xs text-muted-foreground py-4 text-center">No notifications</p>
+                    ) : (
+                      notifications.map((n) => (
+                        <div
+                          key={n.id}
+                          onClick={() => markNotificationRead(n.id)}
+                          className={cn(
+                            "p-2.5 rounded-xl border text-xs cursor-pointer transition-colors",
+                            n.read ? "bg-secondary/20 border-border/30 text-muted-foreground" : "bg-accent/10 border-accent/30 text-foreground font-500"
+                          )}
+                        >
+                          <div className="flex justify-between items-start mb-1">
+                            <span className="font-700 text-[11px]">{n.title}</span>
+                            <span className="text-[9px] text-muted-foreground font-mono">{n.time}</span>
+                          </div>
+                          <p className="text-[10px] leading-relaxed">{n.body}</p>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
         </header>
 
-        {/* Mobile tabs */}
-        <div className="flex gap-2 overflow-x-auto border-b border-border px-4 py-3 md:hidden">
-          {nav.map((n) => (
+        {/* Mobile Horizontal Tabs (< 768px) */}
+        <div className="flex gap-1.5 overflow-x-auto border-b border-border px-4 py-2.5 md:hidden scrollbar-none">
+          {navGroups.flatMap((g) => g.items).map((item) => (
             <button
-              key={n.id}
-              onClick={() => setTab(n.id)}
+              key={item.id}
+              onClick={() => setActiveTab(item.id)}
               className={cn(
-                "whitespace-nowrap rounded-full border border-border px-3 py-1.5 text-xs",
-                tab === n.id ? "border-roast/50 bg-accent text-roast" : "text-muted-foreground",
+                "whitespace-nowrap rounded-full border px-3 py-1 text-[11px] font-600 shrink-0",
+                activeTab === item.id ? "border-accent bg-accent text-roast font-700" : "border-border text-muted-foreground"
               )}
             >
-              {n.label}
+              {item.label}
             </button>
           ))}
         </div>
 
-        <main className="flex-1 p-4 md:p-6">
-          {tab === "overview" && <Overview />}
-          {tab === "products" && <ProductsTab />}
-          {tab === "pos" && <PosTab />}
+        {/* Tab Router Content */}
+        <main className="flex-1 p-4 md:p-6 overflow-y-auto">
+          {activeTab === "Dashboard" && <OverviewTab />}
+          {activeTab === "Inventory" && <InventoryTab />}
+          {activeTab === "Products" && <ProductsTab />}
+          {activeTab === "Categories" && <CategoriesTab />}
+          {activeTab === "Rate List" && <RateListTab />}
+          {activeTab === "Suppliers" && <SuppliersTab />}
+          {activeTab === "Customers" && <CustomersTab />}
+          {activeTab === "Sales" && <SalesTab />}
+          {activeTab === "Invoices" && <InvoicesTab />}
+          {activeTab === "POS" && <PosTab />}
+          {activeTab === "CRM" && <CrmTab />}
+          {activeTab === "Analytics" && <AnalyticsTab />}
+          {activeTab === "Reports" && <ReportsTab />}
+          {activeTab === "Mini AI" && <AiAssistantTab />}
+          {activeTab === "Settings" && <SettingsTab />}
         </main>
       </div>
 
+      {/* Floating AI Insight Widget */}
       <AiWidget />
 
-      <CommandDialog open={paletteOpen} onOpenChange={setPaletteOpen}>
-        <CommandInput placeholder="Search products, invoices, customers…" />
-        <CommandList>
-          <CommandEmpty>No results found.</CommandEmpty>
-          <CommandGroup heading="Go to">
-            {nav.map((n) => (
-              <CommandItem
-                key={n.id}
-                onSelect={() => {
-                  setTab(n.id);
-                  setPaletteOpen(false);
-                }}
-              >
-                <n.icon className="size-4" /> {n.label}
-              </CommandItem>
-            ))}
-          </CommandGroup>
-          <CommandGroup heading="Products">
-            {products.slice(0, 5).map((p) => (
-              <CommandItem key={p.id} onSelect={() => setPaletteOpen(false)}>
-                <Boxes className="size-4" /> {p.name}
-                <span className="ml-auto text-xs text-muted-foreground tabular">{p.sku}</span>
-              </CommandItem>
-            ))}
-          </CommandGroup>
-          <CommandGroup heading="Recent invoices">
-            {sales.slice(0, 3).map((s) => (
-              <CommandItem key={s.id} onSelect={() => setPaletteOpen(false)}>
-                <FileText className="size-4" /> {s.invoice_number} · {s.customer_name}
-                <span className="ml-auto text-xs text-muted-foreground tabular">
-                  {inr(s.total)}
-                </span>
-              </CommandItem>
-            ))}
-          </CommandGroup>
-        </CommandList>
-      </CommandDialog>
+      {/* Global Command Palette (Ctrl+K) */}
+      <CommandPalette
+        isOpen={isCommandPaletteOpen}
+        onClose={() => setIsCommandPaletteOpen(false)}
+        onNavigate={(tabName) => setActiveTab(tabName)}
+      />
     </div>
   );
 }
 
-function KpiCard({
-  label,
-  value,
-  delta,
-  prefix,
-  suffix,
-  decimals,
-}: {
-  label: string;
-  value: number;
-  delta: string;
-  prefix?: string;
-  suffix?: string;
-  decimals?: number;
-}) {
-  return (
-    <div className="glass p-5">
-      <p className="text-xs text-muted-foreground">{label}</p>
-      <p className="mt-2 text-2xl font-semibold">
-        <CountUp value={value} prefix={prefix ?? ""} suffix={suffix ?? ""} decimals={decimals ?? 0} />
-      </p>
-      <p className="mt-1 text-xs text-signal">{delta}</p>
-    </div>
-  );
-}
+function OverviewTab() {
+  const { products, sales, customers } = useBusinessState();
 
-function Overview() {
+  const totalRevenue = sales.reduce((acc, s) => acc + s.total, 0);
+  const lowStockCount = products.filter((p) => p.stock <= 10).length;
+
   return (
-    <div className="space-y-4">
-      <div>
-        <h1 className="text-2xl font-semibold">Overview</h1>
-        <p className="text-sm text-muted-foreground">
-          Demo tenant · all figures from local mock data
-        </p>
+    <div className="space-y-6 animate-in fade-in duration-300">
+      <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-border/40 pb-4">
+        <div>
+          <h1 className="text-2xl font-bold font-display">Command Center</h1>
+          <p className="text-xs text-muted-foreground">
+            Live business summary, stock health, and revenue stream analytics.
+          </p>
+        </div>
       </div>
 
+      {/* 4 KPI Strip */}
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <KpiCard label="Revenue (7 days)" value={820000} prefix="₹" delta="+12.4% vs last week" />
-        <KpiCard label="Orders" value={1284} delta="+86 today" />
-        <KpiCard label="Inventory valuation" value={4120000} prefix="₹" delta="42% in Coffee" />
-        <KpiCard label="Sync uptime" value={99.98} decimals={2} suffix="%" delta="No incidents" />
-      </div>
-
-      <div className="grid gap-4 lg:grid-cols-3">
-        <div className="glass p-5 lg:col-span-2">
-          <div className="flex items-center justify-between">
-            <h2 className="text-sm font-semibold">Revenue trend</h2>
-            <Badge variant="outline" className="text-signal">
-              Live
-            </Badge>
-          </div>
-          <div className="mt-4">
-            <AreaTrend data={revenueSeries} />
-          </div>
+        <div className="glass p-5 rounded-2xl border border-border">
+          <p className="text-xs text-muted-foreground font-600">Total Sales Revenue</p>
+          <p className="mt-2 text-2xl font-bold font-mono">
+            <CountUp value={totalRevenue > 0 ? totalRevenue : 820000} prefix="₹" />
+          </p>
+          <p className="mt-1 text-xs text-signal font-600">+14.8% vs previous cycle</p>
         </div>
 
-        <div className="glass p-5">
-          <h2 className="text-sm font-semibold">Valuation by category</h2>
-          <div className="mt-2">
-            <Donut data={valuationByCategory} colors={chartColors} />
+        <div className="glass p-5 rounded-2xl border border-border">
+          <p className="text-xs text-muted-foreground font-600">Active Invoices</p>
+          <p className="mt-2 text-2xl font-bold font-mono">
+            <CountUp value={sales.length > 0 ? sales.length : 1284} />
+          </p>
+          <p className="mt-1 text-xs text-signal font-600">All payments committed</p>
+        </div>
+
+        <div className="glass p-5 rounded-2xl border border-border">
+          <p className="text-xs text-muted-foreground font-600">Low Stock SKUs</p>
+          <p className="mt-2 text-2xl font-bold font-mono text-rose-500">
+            <CountUp value={lowStockCount} />
+          </p>
+          <p className="mt-1 text-xs text-rose-500 font-600">Requires reorder intake</p>
+        </div>
+
+        <div className="glass p-5 rounded-2xl border border-border">
+          <p className="text-xs text-muted-foreground font-600">Registered Customers</p>
+          <p className="mt-2 text-2xl font-bold font-mono">
+            <CountUp value={customers.length > 0 ? customers.length : 12400} />
+          </p>
+          <p className="mt-1 text-xs text-signal font-600">CRM database synced</p>
+        </div>
+      </div>
+
+      {/* Revenue & Category Visuals */}
+      <div className="grid gap-4 lg:grid-cols-3">
+        <div className="glass p-5 rounded-2xl border border-border lg:col-span-2">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-sm font-bold font-display">Revenue Velocity Trend</h2>
+            <span className="text-[10px] font-bold bg-sage text-signal px-2 py-0.5 rounded-full border border-emerald-500/20">
+              Live Stream
+            </span>
           </div>
-          <ul className="mt-3 space-y-1.5">
+          <AreaTrend data={revenueSeries} />
+        </div>
+
+        <div className="glass p-5 rounded-2xl border border-border">
+          <h2 className="text-sm font-bold font-display mb-4">Valuation by Category</h2>
+          <Donut data={valuationByCategory} colors={chartColors} />
+          <ul className="mt-4 space-y-2">
             {valuationByCategory.map((v, i) => (
               <li key={v.category} className="flex items-center gap-2 text-xs">
                 <span
@@ -327,261 +414,10 @@ function Overview() {
                   style={{ background: chartColors[i % chartColors.length] }}
                 />
                 <span className="text-muted-foreground">{v.category}</span>
-                <span className="ml-auto tabular">{v.value}%</span>
+                <span className="ml-auto font-mono font-600">{v.value}%</span>
               </li>
             ))}
           </ul>
-        </div>
-      </div>
-
-      <div className="grid gap-4 lg:grid-cols-3">
-        <div className="glass p-5">
-          <h2 className="flex items-center gap-2 text-sm font-semibold">
-            <TriangleAlert className="size-4 text-destructive" /> Low stock
-          </h2>
-          <ul className="mt-4 space-y-3">
-            {lowStock.map((p) => (
-              <li key={p.id} className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm">{p.name}</p>
-                  <p className="text-xs text-muted-foreground tabular">{p.sku}</p>
-                </div>
-                <span className="rounded-full bg-destructive/12 px-2 py-0.5 text-xs text-destructive tabular">
-                  {p.stock} / {p.reorder_point}
-                </span>
-              </li>
-            ))}
-          </ul>
-          <Button variant="outline" size="sm" className="mt-5 w-full">
-            Draft purchase orders
-          </Button>
-        </div>
-
-        <div className="glass p-5 lg:col-span-2">
-          <h2 className="text-sm font-semibold">Recent sales</h2>
-          <div className="mt-4 overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="text-left text-xs text-muted-foreground">
-                  <th className="pb-2 font-medium">Invoice</th>
-                  <th className="pb-2 font-medium">Customer</th>
-                  <th className="pb-2 font-medium">Method</th>
-                  <th className="pb-2 text-right font-medium">Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                {sales.map((s) => (
-                  <tr key={s.id} className="border-t border-rule">
-                    <td className="py-2.5 tabular">{s.invoice_number}</td>
-                    <td className="py-2.5">{s.customer_name}</td>
-                    <td className="py-2.5">
-                      <span className="rounded-full bg-muted px-2 py-0.5 text-xs">
-                        {s.payment_method}
-                      </span>
-                    </td>
-                    <td className="py-2.5 text-right tabular">{inr(s.total)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <div className="glass p-5">
-        <h2 className="text-sm font-semibold">Top customers by LTV</h2>
-        <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-          {customers.map((c) => (
-            <div key={c.id} className="rounded-xl border border-border bg-card p-4">
-              <p className="text-sm font-medium">{c.name}</p>
-              <p className="text-xs text-muted-foreground">{c.segment}</p>
-              <p className="mt-3 text-lg font-semibold tabular">{inr(c.ltv)}</p>
-              <p className="text-xs text-muted-foreground tabular">
-                {c.orders_count} orders · AOV {inr(c.avg_order_value)}
-              </p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function ProductsTab() {
-  return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-semibold">Products</h1>
-          <p className="text-sm text-muted-foreground tabular">
-            {products.length} SKUs · {lowStock.length} below reorder point
-          </p>
-        </div>
-        <Button size="sm">Add product</Button>
-      </div>
-
-      <div className="glass overflow-x-auto p-1">
-        <table className="w-full min-w-[820px] text-sm">
-          <thead>
-            <tr className="text-left text-xs text-muted-foreground">
-              <th className="p-4 font-medium">SKU</th>
-              <th className="p-4 font-medium">Product</th>
-              <th className="p-4 font-medium">Category</th>
-              <th className="p-4 text-right font-medium">Cost</th>
-              <th className="p-4 text-right font-medium">Price</th>
-              <th className="p-4 text-right font-medium">GST</th>
-              <th className="p-4 text-right font-medium">Stock</th>
-            </tr>
-          </thead>
-          <tbody>
-            {products.map((p) => (
-              <tr key={p.id} className="border-t border-rule hover:bg-accent/40">
-                <td className="p-4 tabular text-muted-foreground">{p.sku}</td>
-                <td className="p-4">
-                  <p>{p.name}</p>
-                  <p className="text-xs text-muted-foreground tabular">
-                    HSN {p.hsn} · {p.supplier}
-                  </p>
-                </td>
-                <td className="p-4">
-                  <span
-                    className={cn(
-                      "rounded-full px-2.5 py-0.5 text-xs",
-                      categoryChip(p.category),
-                    )}
-                  >
-                    {p.category}
-                  </span>
-                </td>
-                <td className="p-4 text-right tabular">{inr(p.cost)}</td>
-                <td className="p-4 text-right tabular">{inr(p.price)}</td>
-                <td className="p-4 text-right tabular text-muted-foreground">{p.gst_rate}%</td>
-                <td className="p-4 text-right">
-                  <span
-                    className={cn(
-                      "rounded-full px-2.5 py-0.5 text-xs tabular",
-                      p.stock <= p.reorder_point
-                        ? "bg-destructive/12 text-destructive"
-                        : "bg-sage text-signal",
-                    )}
-                  >
-                    {p.stock} {p.unit}
-                  </span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-}
-
-function PosTab() {
-  const [cart, setCart] = useState<Record<string, number>>({
-    "cf-col-1kg": 2,
-    "mk-oat-1l": 4,
-  });
-
-  const lines = products
-    .filter((p) => cart[p.id])
-    .map((p) => ({ product: p, qty: cart[p.id] as number }));
-
-  const subtotal = lines.reduce((s, l) => s + l.product.price * l.qty, 0);
-  const gst = lines.reduce((s, l) => s + (l.product.price * l.qty * l.product.gst_rate) / 100, 0);
-  const total = subtotal + gst;
-
-  const add = (id: string, delta: number) =>
-    setCart((c) => {
-      const next = { ...c, [id]: Math.max(0, (c[id] ?? 0) + delta) };
-      if (next[id] === 0) delete next[id];
-      return next;
-    });
-
-  return (
-    <div className="space-y-4">
-      <div>
-        <h1 className="text-2xl font-semibold">POS Console</h1>
-        <p className="text-sm text-muted-foreground">
-          Sale and stock decrement commit as one operation
-        </p>
-      </div>
-
-      <div className="grid gap-4 lg:grid-cols-3">
-        <div className="glass p-5 lg:col-span-2">
-          <h2 className="text-sm font-semibold">Catalog</h2>
-          <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-            {products.map((p) => (
-              <button
-                key={p.id}
-                onClick={() => add(p.id, 1)}
-                className="rounded-xl border border-border bg-card p-4 text-left transition-colors hover:border-roast/50 hover:bg-accent/50"
-              >
-                <span
-                  className={cn("rounded-full px-2 py-0.5 text-[11px]", categoryChip(p.category))}
-                >
-                  {p.category}
-                </span>
-                <p className="mt-3 text-sm font-medium">{p.name}</p>
-                <p className="mt-1 text-sm tabular text-muted-foreground">
-                  {inr(p.price)} · {p.gst_rate}% GST
-                </p>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="glass flex flex-col p-5">
-          <h2 className="text-sm font-semibold">Cart</h2>
-          <ul className="mt-4 flex-1 space-y-3">
-            {lines.length === 0 && (
-              <li className="text-sm text-muted-foreground">Tap a product to start a sale.</li>
-            )}
-            {lines.map((l) => (
-              <li key={l.product.id} className="flex items-center gap-3">
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm">{l.product.name}</p>
-                  <p className="text-xs text-muted-foreground tabular">
-                    {inr(l.product.price)} × {l.qty}
-                  </p>
-                </div>
-                <div className="flex items-center gap-1">
-                  <button
-                    onClick={() => add(l.product.id, -1)}
-                    className="size-7 rounded-md border border-border text-sm"
-                    aria-label={`Remove one ${l.product.name}`}
-                  >
-                    −
-                  </button>
-                  <button
-                    onClick={() => add(l.product.id, 1)}
-                    className="size-7 rounded-md border border-border text-sm"
-                    aria-label={`Add one ${l.product.name}`}
-                  >
-                    +
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ul>
-
-          <div className="mt-5 space-y-2 border-t border-border pt-4 text-sm">
-            <div className="flex justify-between text-muted-foreground">
-              <span>Subtotal</span>
-              <span className="tabular">{inr(Math.round(subtotal))}</span>
-            </div>
-            <div className="flex justify-between text-muted-foreground">
-              <span>GST</span>
-              <span className="tabular">{inr(Math.round(gst))}</span>
-            </div>
-            <div className="flex justify-between text-lg font-semibold">
-              <span>Total</span>
-              <span className="tabular">{inr(Math.round(total))}</span>
-            </div>
-          </div>
-          <Button className="mt-4" disabled={lines.length === 0}>
-            Charge via UPI
-          </Button>
         </div>
       </div>
     </div>
@@ -590,29 +426,220 @@ function PosTab() {
 
 function AiWidget() {
   const [open, setOpen] = useState(false);
+  const { products, customers, sales, customerNotes } = useBusinessState();
+  const [messages, setMessages] = useState<{ sender: "user" | "ai"; text: string; time: string }[]>([
+    {
+      sender: "ai",
+      text: "Hello! I am **INVENTROX Mini AI**, your operational business intelligence assistant. Ask me about stock alerts, revenue totals, VIP clients, or 30-day forecasts.",
+      time: "Just now",
+    },
+  ]);
+  const [input, setInput] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+
+  // Keybinding (Ctrl+Shift+A) to toggle widget
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key.toLowerCase() === "a") {
+        e.preventDefault();
+        setOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
+  const handleSendMessage = (text: string) => {
+    if (!text.trim()) return;
+
+    const userMsg = {
+      sender: "user" as const,
+      text,
+      time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+    };
+    setMessages((prev) => [...prev, userMsg]);
+    setInput("");
+    setIsTyping(true);
+
+    setTimeout(() => {
+      let reply = "";
+      const q = text.toLowerCase();
+
+      if (q.includes("stock") || q.includes("reorder") || q.includes("inventory") || q.includes("product")) {
+        const lowItems = products.filter((p) => p.stock <= 10);
+        const outItems = products.filter((p) => p.stock === 0);
+        reply = `### 📦 INVENTORY AUDIT REPORT\n\n` +
+          `• **Catalog SKUs:** ${products.length} active products\n` +
+          `• **Low Stock Items:** ${lowItems.length}\n` +
+          `• **Out of Stock:** ${outItems.length}\n\n` +
+          (lowItems.length > 0
+            ? lowItems.map((p) => `* **${p.name}** (\`${p.sku}\`) — **${p.stock} ${p.unit}** remaining. Supplier: **${p.supplier}**.`).join("\n")
+            : "* Stock levels look healthy across all catalog items.");
+      } else if (q.includes("revenue") || q.includes("sales") || q.includes("finance") || q.includes("bill") || q.includes("total")) {
+        const totalSalesSum = sales.reduce((acc, s) => acc + s.total, 0);
+        reply = `### 📈 FINANCIAL SUMMARY\n\n` +
+          `• **Gross Sales Revenue:** ₹${totalSalesSum.toLocaleString("en-IN")}\n` +
+          `• **Invoices Issued:** ${sales.length} bills\n` +
+          `• **Average Invoice Value:** ₹${Math.round(totalSalesSum / (sales.length || 1)).toLocaleString("en-IN")}`;
+      } else if (q.includes("customer") || q.includes("vip") || q.includes("crm")) {
+        const vipList = customers.filter((c) => c.segment === "VIP");
+        reply = `### 👥 CRM SNAPSHOT\n\n` +
+          `• **Total Customers:** ${customers.length}\n` +
+          `• **VIP Clients:** ${vipList.length}\n\n` +
+          (vipList.length > 0
+            ? vipList.map((c) => `* **${c.name}** — LTV: ₹${c.ltv.toLocaleString("en-IN")}`).join("\n")
+            : "* No VIP clients registered yet.");
+      } else if (q.includes("forecast") || q.includes("predict")) {
+        const totalSalesSum = sales.reduce((acc, s) => acc + s.total, 0);
+        const projectedSales = Math.round((totalSalesSum || 820000) * 1.158);
+        reply = `### 🔮 30-DAY AI FORECAST\n\n` +
+          `• **Projected Growth:** **+15.8%**\n` +
+          `• **Target Revenue:** ₹${projectedSales.toLocaleString("en-IN")}\n` +
+          `• **Recommendation:** Pre-order Oat Milk & Yirgacheffe roasts to handle weekend surges.`;
+      } else {
+        reply = `I have scanned your live database. Ask me about:\n` +
+          `* **"Low stock alerts"** for restock recommendations\n` +
+          `* **"Total revenue"** for financial metrics\n` +
+          `* **"VIP customers"** for CRM details\n` +
+          `* **"30-day forecast"** for growth prediction`;
+      }
+
+      setMessages((prev) => [
+        ...prev,
+        {
+          sender: "ai",
+          text: reply,
+          time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        },
+      ]);
+      setIsTyping(false);
+    }, 350);
+  };
+
   return (
-    <div className="fixed bottom-5 right-5 z-50">
+    <>
+      {/* Slide-over Full Chat Drawer Panel */}
       {open && (
-        <div className="glass-strong mb-3 w-72 p-4 shadow-[var(--shadow-glass)]">
-          <p className="flex items-center gap-2 text-xs font-medium text-roast">
-            <Sparkles className="size-3.5" /> AI insight
-          </p>
-          <p className="mt-2 text-sm leading-snug">
-            Ethiopia Yirgacheffe is <span className="tabular">4 days</span> from stockout at current
-            velocity. Reorder 24 packs from Highland Traders to hold service level.
-          </p>
-          <Button size="sm" variant="outline" className="mt-4 w-full">
-            Create purchase order
-          </Button>
+        <div className="fixed inset-y-0 right-0 z-[9999] flex w-full max-w-[420px] flex-col border-l border-border bg-card shadow-2xl animate-in slide-in-from-right duration-300">
+          {/* Drawer Topbar Header */}
+          <div className="flex items-center justify-between border-b border-border/50 px-5 py-4 bg-secondary/20">
+            <div className="flex items-center gap-2.5">
+              <div className="size-8 rounded-full bg-accent/20 border border-accent/40 flex items-center justify-center text-roast">
+                <Sparkles className="size-4 text-roast animate-pulse" />
+              </div>
+              <div>
+                <h3 className="font-display font-bold text-sm text-foreground flex items-center gap-2">
+                  INVENTROX Mini AI
+                  <span className="size-2 rounded-full bg-emerald-500 animate-ping" />
+                </h3>
+                <p className="text-[10px] text-muted-foreground font-mono">Sovereign DB Synced · (Ctrl+Shift+A)</p>
+              </div>
+            </div>
+            <button
+              onClick={() => setOpen(false)}
+              className="p-1.5 rounded-xl border border-border/50 text-muted-foreground hover:text-foreground hover:bg-secondary/40 transition-colors"
+            >
+              <X className="size-4" />
+            </button>
+          </div>
+
+          {/* Messages Scroll Area */}
+          <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin">
+            {messages.map((msg, idx) => (
+              <div
+                key={idx}
+                className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
+              >
+                <div
+                  className={`max-w-[88%] rounded-2xl px-4 py-3 text-xs leading-relaxed ${
+                    msg.sender === "user"
+                      ? "bg-accent text-roast font-600 shadow-sm"
+                      : "glass text-foreground border border-border/60 bg-card"
+                  }`}
+                >
+                  {msg.sender === "user" ? (
+                    msg.text
+                  ) : (
+                    <MarkdownRenderer content={msg.text} />
+                  )}
+                </div>
+              </div>
+            ))}
+
+            {isTyping && (
+              <div className="flex justify-start">
+                <div className="glass border border-border rounded-2xl px-4 py-3 flex gap-1.5 items-center">
+                  <span className="size-1.5 rounded-full bg-accent animate-bounce" />
+                  <span className="size-1.5 rounded-full bg-accent animate-bounce delay-100" />
+                  <span className="size-1.5 rounded-full bg-accent animate-bounce delay-200" />
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Quick Prompt Pills */}
+          <div className="px-4 py-2 border-t border-border/30 bg-secondary/10 flex gap-1.5 overflow-x-auto scrollbar-none">
+            <button
+              onClick={() => handleSendMessage("Low stock alerts")}
+              className="px-2.5 py-1 rounded-full border border-border/50 bg-card text-[10px] font-600 text-muted-foreground hover:text-foreground hover:border-accent transition-colors shrink-0 cursor-pointer"
+            >
+              Low Stock Alerts
+            </button>
+            <button
+              onClick={() => handleSendMessage("Revenue breakdown")}
+              className="px-2.5 py-1 rounded-full border border-border/50 bg-card text-[10px] font-600 text-muted-foreground hover:text-foreground hover:border-accent transition-colors shrink-0 cursor-pointer"
+            >
+              Revenue
+            </button>
+            <button
+              onClick={() => handleSendMessage("VIP customer list")}
+              className="px-2.5 py-1 rounded-full border border-border/50 bg-card text-[10px] font-600 text-muted-foreground hover:text-foreground hover:border-accent transition-colors shrink-0 cursor-pointer"
+            >
+              VIP Clients
+            </button>
+            <button
+              onClick={() => handleSendMessage("30-day forecast")}
+              className="px-2.5 py-1 rounded-full border border-border/50 bg-card text-[10px] font-600 text-muted-foreground hover:text-foreground hover:border-accent transition-colors shrink-0 cursor-pointer"
+            >
+              Forecast
+            </button>
+          </div>
+
+          {/* Input Form */}
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSendMessage(input);
+            }}
+            className="flex items-center border-t border-border p-3.5 gap-2.5 bg-card shrink-0"
+          >
+            <input
+              placeholder="Ask Mini AI about inventory, bills, or LTV..."
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              className="flex-1 bg-secondary/30 border border-border rounded-xl px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground outline-none focus:border-accent"
+            />
+            <button
+              type="submit"
+              disabled={!input.trim()}
+              className="size-9 rounded-xl bg-accent text-roast font-bold flex items-center justify-center hover:opacity-90 active:scale-95 transition-all disabled:opacity-40 cursor-pointer"
+            >
+              <Send className="size-4" />
+            </button>
+          </form>
         </div>
       )}
-      <button
-        onClick={() => setOpen((v) => !v)}
-        className="ml-auto flex size-12 items-center justify-center rounded-full bg-foreground text-background shadow-[var(--shadow-pop)]"
-        aria-label="Toggle AI insights"
-      >
-        <Sparkles className="size-5" />
-      </button>
-    </div>
+
+      {/* Floating Toggle Button */}
+      <div className="fixed bottom-6 right-6 z-[10000]">
+        <button
+          onClick={() => setOpen((v) => !v)}
+          className="flex size-14 items-center justify-center rounded-full bg-foreground text-background shadow-2xl hover:scale-105 active:scale-95 transition-all cursor-pointer border-2 border-background"
+          aria-label="Toggle Mini AI Assistant"
+        >
+          <Sparkles className="size-6" />
+        </button>
+      </div>
+    </>
   );
 }

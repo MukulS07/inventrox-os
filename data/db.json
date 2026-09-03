@@ -1,0 +1,79 @@
+{
+  "products": [
+    {
+      "id": "p1",
+      "sku": "COF-EXP-1KG",
+      "name": "Espresso Roast Beans 1kg",
+      "category": "Coffee",
+      "cost": 950,
+      "price": 1450,
+      "stock": 24,
+      "gstRate": 5,
+      "hsn": "0901",
+      "unit": "kg",
+      "imageUrl": "",
+      "description": "Premium dark roast blend, 100% Arabica, chocolatey and full-bodied.",
+      "supplier": "Blue Tokai Coffee",
+      "onRateList": true
+    },
+    {
+      "id": "p2",
+      "sku": "COF-CBW-1KG",
+      "name": "Cold Brew Blend 1kg",
+      "category": "Coffee",
+      "cost": 1100,
+      "price": 1600,
+      "stock": 15,
+      "gstRate": 5,
+      "hsn": "0901",
+      "unit": "kg",
+      "imageUrl": "",
+      "description": "Coarse ground blend optimized for 18-hour cold steeping.",
+      "supplier": "Blue Tokai Coffee"
+    }
+  ],
+  "customers": [
+    {
+      "id": "c1",
+      "name": "Anita Sharma",
+      "phone": "9876543210",
+      "email": "anita.sharma@example.com",
+      "segment": "New",
+      "address": "B-204, Beverly Hills Apartments, Sector 56, Gurgaon",
+      "gstin": "07AAAAA1111A1Z1",
+      "joinedDate": "2026-09-03",
+      "ltv": 0,
+      "ordersCount": 0,
+      "avgOrderValue": 0,
+      "daysSinceLastVisit": 0
+    },
+    {
+      "id": "c2",
+      "name": "Rohan Mehta",
+      "phone": "9812345678",
+      "email": "rohan.mehta@example.com",
+      "segment": "New",
+      "address": "H.No 45, Lane 3, Shanti Nagar, New Delhi",
+      "gstin": "",
+      "joinedDate": "2026-09-03",
+      "ltv": 0,
+      "ordersCount": 0,
+      "avgOrderValue": 0,
+      "daysSinceLastVisit": 0
+    }
+  ],
+  "sales": [],
+  "services": [],
+  "suppliers": [],
+  "notifications": [
+    {
+      "id": "n1",
+      "title": "Welcome to INVENTROX",
+      "body": "Your Business OS is ready. We have created 2 demo products and 2 demo customers to help you get started.",
+      "type": "success",
+      "read": false,
+      "time": "Just now"
+    }
+  ],
+  "customerNotes": []
+}
