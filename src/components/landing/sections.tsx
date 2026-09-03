@@ -213,6 +213,20 @@ const workflows = [
     total: ["Working capital freed", "₹2.4L"],
     tone: "roast" as const,
   },
+  {
+    id: "crm",
+    label: "CRM Win-back",
+    icon: Users,
+    headline: "Churn risk flagged before the account goes quiet",
+    body: "Every sale enriches the customer record — segment, LTV and days-since-visit update in the same transaction, so win-back lists write themselves.",
+    rows: [
+      ["Rhea Nair · Retail", "9 days idle · LTV ₹24.8k"],
+      ["Kettle & Co. · Cafe", "2 days idle · LTV ₹1.49L"],
+      ["Suggested play", "WhatsApp nudge + 5% coupon"],
+    ],
+    total: ["Recoverable revenue", "₹1.74L"],
+    tone: "signal" as const,
+  },
 ];
 
 export function WorkflowExplorer() {
@@ -421,6 +435,118 @@ export function SocialProof() {
             <p className="mt-6 text-xs text-muted-foreground">Customer quote pending approval</p>
           </Reveal>
         ))}
+      </div>
+    </section>
+  );
+}
+
+/* 8.5 — CRM relationship ledger */
+const pipeline = [
+  {
+    stage: "New",
+    tone: "signal" as const,
+    accounts: [{ name: "Mocha Lane", meta: "First order · ₹2,140" }],
+  },
+  {
+    stage: "Active",
+    tone: "signal" as const,
+    accounts: [
+      { name: "Kettle & Co.", meta: "41 orders · AOV ₹3.6k" },
+      { name: "Rhea Nair", meta: "12 orders · AOV ₹2.1k" },
+    ],
+  },
+  {
+    stage: "Loyal",
+    tone: "roast" as const,
+    accounts: [
+      { name: "Bluebird Cafe", meta: "62 orders · LTV ₹4.86L" },
+      { name: "Anchor Roastery", meta: "28 orders · LTV ₹3.12L" },
+    ],
+  },
+  {
+    stage: "At risk",
+    tone: "roast" as const,
+    accounts: [{ name: "Verde Bistro", meta: "21 days idle · LTV ₹88k" }],
+  },
+];
+
+export function Crm() {
+  return (
+    <section className="border-y border-border/60 bg-card/30">
+      <div className="mx-auto max-w-7xl px-5 py-24">
+        <SectionHead
+          eyebrow="CRM, built into the ledger"
+          title="Every sale deepens the relationship graph"
+          sub="No separate CRM to sync — segments, LTV and churn signals compute from the same transactions that run your POS."
+        />
+        <div className="mt-14 grid items-start gap-8 lg:grid-cols-[1fr_1.2fr]">
+          <Reveal className="space-y-4">
+            {[
+              {
+                k: "Relationship LTV",
+                v: "Computed per account from real order history — not a static tag.",
+              },
+              {
+                k: "Churn radar",
+                v: "Days-since-visit thresholds surface at-risk accounts with a suggested play.",
+              },
+              {
+                k: "One timeline",
+                v: "Invoices, payments, visits and notes on a single customer record.",
+              },
+            ].map((f) => (
+              <div key={f.k} className="glass p-5">
+                <h3 className="text-sm font-semibold">{f.k}</h3>
+                <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{f.v}</p>
+              </div>
+            ))}
+          </Reveal>
+
+          <Reveal delay={120} className="glass-strong p-5 md:p-6">
+            <div className="flex items-center justify-between border-b border-border/60 pb-3">
+              <span className="text-xs uppercase tracking-widest text-muted-foreground">
+                Account pipeline
+              </span>
+              <span className="rounded-full bg-signal/12 px-2 py-0.5 text-[11px] text-signal">
+                live mock
+              </span>
+            </div>
+            <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-4">
+              {pipeline.map((col) => (
+                <div key={col.stage}>
+                  <p
+                    className={cn(
+                      "text-[10px] font-semibold uppercase tracking-[0.18em]",
+                      col.tone === "signal" ? "text-signal" : "text-roast",
+                    )}
+                  >
+                    {col.stage}
+                  </p>
+                  <div className="mt-2.5 space-y-2">
+                    {col.accounts.map((a) => (
+                      <div
+                        key={a.name}
+                        className="rounded-xl border border-border bg-card/70 p-3 transition-colors hover:border-roast/40"
+                      >
+                        <p className="truncate text-xs font-medium">{a.name}</p>
+                        <p className="mt-1 text-[10px] leading-snug text-muted-foreground">
+                          {a.meta}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="mt-5 flex items-center justify-between rounded-xl border border-roast/30 bg-roast/8 px-4 py-3">
+              <span className="flex items-center gap-2 text-xs text-muted-foreground">
+                <Sparkles className="size-3.5 text-roast" />
+                AI play: win back Verde Bistro with a WhatsApp nudge
+              </span>
+              <span className="text-sm font-semibold tabular text-roast">₹88k at stake</span>
+            </div>
+          </Reveal>
+        </div>
       </div>
     </section>
   );

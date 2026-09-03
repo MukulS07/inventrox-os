@@ -3,7 +3,7 @@ import { ArrowRight, Zap, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/site/reveal";
 import { CountUp } from "@/components/site/count-up";
-import { revenueSeries } from "@/data/mock";
+import { customers, revenueSeries } from "@/data/mock";
 
 function Sparkbars() {
   const max = Math.max(...revenueSeries.map((d) => d.value));
@@ -40,7 +40,8 @@ export function Hero() {
           </span>
 
           <h1 className="mt-7 text-balance text-5xl font-semibold leading-[1.02] tracking-tight md:text-7xl">
-            The intelligence layer for <span className="text-roast">modern operations</span>
+            The intelligence layer for{" "}
+            <span className="text-gradient-roast">modern operations</span>
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground">
             INVENTROX unifies inventory, POS billing, GST invoicing, CRM and AI forecasting into one
@@ -91,7 +92,7 @@ export function Hero() {
                   <CountUp value={820000} prefix="₹" />
                 </p>
               </div>
-              <div className="hidden gap-8 text-right sm:flex">
+              <div className="hidden gap-8 text-right sm:flex lg:mr-44">
                 <div>
                   <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
                     Orders
@@ -151,19 +152,36 @@ export function Hero() {
             </div>
           </div>
 
-          {/* Layer 4 — network health */}
-          <div className="glass-strong absolute -right-6 -top-10 z-30 hidden w-52 rounded-xl p-4 shadow-[var(--shadow-glass)] float-b lg:block lg:-right-14">
+          {/* Layer 4 — top accounts (CRM) */}
+          <div className="glass-strong absolute -right-6 -top-40 z-30 hidden w-60 rounded-xl p-4 shadow-[var(--shadow-glass)] float-b lg:block lg:-right-20">
             <div className="flex items-center justify-between">
               <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                Network
+                Top accounts
               </p>
-              <span className="size-2 rounded-full bg-signal" />
+              <span className="rounded-full bg-signal/12 px-2 py-0.5 text-[9px] font-medium uppercase tracking-[0.14em] text-signal">
+                CRM live
+              </span>
             </div>
-            <div className="mt-4 h-1 w-full overflow-hidden rounded-full bg-muted">
-              <div className="h-full w-[94%] rounded-full bg-signal shadow-[0_0_10px_var(--signal)]" />
-            </div>
-            <p className="mt-2 text-[11px] text-muted-foreground">
-              Forecast accuracy <span className="tabular text-foreground">94.2%</span>
+            <ul className="mt-3 space-y-3">
+              {customers.slice(0, 3).map((c) => (
+                <li key={c.id} className="flex items-center gap-2.5">
+                  <span className="grid size-6 shrink-0 place-items-center rounded-md bg-roast/15 text-[9px] font-semibold text-roast">
+                    {c.name.slice(0, 2).toUpperCase()}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-[11px] font-medium leading-tight">{c.name}</p>
+                    <p className="text-[9px] text-muted-foreground">
+                      {c.segment} · {c.orders_count} orders
+                    </p>
+                  </div>
+                  <span className="text-[11px] font-semibold tabular text-signal">
+                    ₹{(c.ltv / 100000).toFixed(1)}L
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-3 border-t border-border/60 pt-2 text-[10px] text-muted-foreground">
+              Relationship LTV <span className="tabular text-foreground">₹9.7L</span> tracked
             </p>
           </div>
 

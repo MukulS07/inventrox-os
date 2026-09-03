@@ -4,6 +4,7 @@ import { SiteFooter } from "@/components/site/footer";
 import { Hero } from "@/components/landing/hero";
 import {
   Bento,
+  Crm,
   FinalCTA,
   Pricing,
   Problems,
@@ -41,6 +42,7 @@ function Index() {
         <Problems />
         <Bento />
         <WorkflowExplorer />
+        <Crm />
         <Roadmap />
         <TrustGrid />
         <StatsBand />
